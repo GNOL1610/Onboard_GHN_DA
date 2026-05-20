@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding DA · Cụm kho Hà Nội · GHN</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="nav-dot"></span>
+    Onboarding DA
+    <span class="navbar-sub">· Cụm kho Hà Nội · Operations</span>
+  </div>
+  <div class="navbar-meta">Cập nhật: <span id="doc-date"></span></div>
+  <div class="navbar-logo">GHN</div>
+</nav>
+
+<div class="tab-bar" id="tab-bar"></div>
+
+<div class="tab-container">
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 1 — TỔNG QUAN
+═══════════════════════════════════════════════════════ -->
+<div id="tab-overview" class="tab-panel active">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">🏠</span>
+    <div><div class="sec-title">Tổng quan</div><div class="sec-sub">Bức tranh GHN → cụm kho Hà Nội</div></div>
+  </div>
+
+  <!-- Scope nhanh -->
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Team</div><div class="kpi-value" style="font-size:16px;line-height:1.3">Operations</div><div class="kpi-sub">Vận hành kho & vận tải</div></div>
+    <div class="kpi-card"><div class="kpi-label">Phạm vi quản lý</div><div class="kpi-value" style="font-size:16px;line-height:1.3">HN02 · DX · HN03</div><div class="kpi-sub">+ BC Hà Nội & Bắc Ninh</div></div>
+    <div class="kpi-card"><div class="kpi-label">Query engine</div><div class="kpi-value" style="font-size:16px;line-height:1.3">Trino</div><div class="kpi-sub">Mặc định cho mọi query</div></div>
+    <div class="kpi-card"><div class="kpi-label">BI Tools</div><div class="kpi-value" style="font-size:16px;line-height:1.3">Metabase</div><div class="kpi-sub">+ Superset · Looker · Grafana</div></div>
+    <div class="kpi-card"><div class="kpi-label">Mạng lưới GHN</div><div class="kpi-value" style="font-size:16px;line-height:1.3">4.644 tuyến</div><div class="kpi-sub">65 tỉnh · 75 hub</div></div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Mô hình vận hành — Hub and Spoke</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:14px">GHN vận hành theo mô hình <strong>Hub and Spoke</strong> — tương tự UPS, DHL, FedEx. Mọi hàng đều đổ về Hub trung tâm (KTC) rồi tỏa ra các điểm đích, thay vì giao thẳng điểm-điểm. Giúp tối ưu chi phí vận tải quy mô lớn và dễ mở rộng.</p>
+
+    <!-- 3 tầng kho -->
+    <div class="grid-3" style="gap:14px;margin-bottom:18px">
+      <div style="background:var(--surface);border:1px solid var(--orange-brd);border-radius:9px;padding:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:8px">🏭 KTC — Kho Trung Chuyển</div>
+        <div style="font-size:12px;color:var(--text-sec);line-height:1.9">
+          Hub chính của mạng lưới. <strong>Có hệ thống Auto Sorting / Wheel Sorter</strong>.<br>
+          <strong>Quy trình:</strong> Nhận xe vào → Rã kiện → Đưa lên băng tải → Sort tự động theo BC đích → Đóng kiện → Xuất xe.<br>
+          <strong>Ví dụ HN02:</strong> 1 hệ thống auto sorting, <strong>288 đích đến</strong>.<br>
+          <span class="badge b-orange" style="margin-top:4px">73 KTC toàn quốc</span>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--text-sec);margin-bottom:8px">🔄 KCT — Kho Chuyển Tiếp</div>
+        <div style="font-size:12px;color:var(--text-sec);line-height:1.9">
+          Hub phụ nội vùng. <strong>Không có sorter</strong> — không rã kiện, không sort lại.<br>
+          <strong>Quy trình:</strong> Nhận kiện nguyên từ nhiều BC địa phương → Gom lại → Đẩy thẳng lên KTC (hoặc KTC đích).<br>
+          Mục tiêu: giảm số chuyến xe mà KTC phải chạy đến từng BC lẻ.<br>
+          <span class="badge b-mute" style="margin-top:4px">35 KCT toàn quốc</span>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--blue-brd);border-radius:9px;padding:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--blue-text);margin-bottom:8px">🏪 BC — Bưu cục</div>
+        <div style="font-size:12px;color:var(--text-sec);line-height:1.9">
+          Điểm last-mile. Tiếp xúc trực tiếp với shop (lấy hàng) và người nhận (giao hàng).<br>
+          <strong>Nhân viên:</strong> NVPTTT (pick-up) và NV Giao (delivery).<br>
+          Trong data: <code class="inline">pick_warehouse_id</code> và <code class="inline">deliver_warehouse_id</code> luôn là BC.<br>
+          <span class="badge b-blue" style="margin-top:4px">4,000+ BC toàn quốc</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow chuẩn -->
+    <div class="flow" style="margin-bottom:14px">
+      <div class="flow-node">🏪 Shop</div><div class="flow-arrow">→</div>
+      <div class="flow-node">BC lấy</div><div class="flow-arrow">→</div>
+      <div class="flow-node">[KCT nội tỉnh]<br><span style="font-size:9px;color:var(--text-mute)">nếu có</span></div><div class="flow-arrow">→</div>
+      <div class="flow-node hi">KTC sort<br><span style="font-size:9px">rã → sort → đóng</span></div><div class="flow-arrow">→</div>
+      <div class="flow-node">[KCT đích]<br><span style="font-size:9px;color:var(--text-mute)">nếu có</span></div><div class="flow-arrow">→</div>
+      <div class="flow-node">BC giao</div><div class="flow-arrow">→</div>
+      <div class="flow-node">👤 Khách</div>
+    </div>
+
+    <!-- Các mô hình vận hành thực tế -->
+    <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Các mô hình vận hành thực tế (song song với Hub and Spoke chuẩn)</div>
+    <div class="tbl-wrap" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>Mô hình</th><th>Flow</th><th>Khi nào áp dụng</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge b-orange">Hub &amp; Spoke chuẩn</span></td>
+            <td>Shop → BC lấy → KTC → BC giao → Khách</td>
+            <td>Đa số đơn hàng thông thường</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-blue">Gom thẳng vào KTC</span></td>
+            <td>Nhiều shop → Xe tải → KTC (bỏ qua BC lấy)</td>
+            <td>Shop lớn, sản lượng nhiều, xe tải vào được</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-green">1 khách đi nhiều KTC</span></td>
+            <td>Shop lớn → KTC đầu → nhiều KTC đích</td>
+            <td>Key account, phân phối toàn quốc</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-warn">Point-to-Point (hàng nặng)</span></td>
+            <td>Shop → Khách (trực tiếp, không qua kho)</td>
+            <td>Hàng nặng / B2B / siêu tốc — dùng Ahamove</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-mute">BC ↔ BC</span></td>
+            <td>BC lấy → BC giao (không qua KTC)</td>
+            <td>Địa bàn đặc thù: đảo, vùng xa (VD: Phú Quốc)</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-teal">KCT đi thẳng KTC đích</span></td>
+            <td>BC → KCT → KTC cuối (bỏ qua KTC đầu)</td>
+            <td>Tối ưu leadtime cho tuyến dài — cắt bớt 1 điểm dừng</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Hệ thống sort -->
+    <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Các phương thức xử lý hàng tại KTC</div>
+    <div class="grid-2" style="gap:12px;margin-bottom:12px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:6px">🤖 Auto Sorting (băng chuyền tự động)</div>
+        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Hàng lên băng tải → sorter quét mã → phân vào chute theo BC đích. Quy mô theo số chute: <strong>HN02: 288 đích · HCM01: ~600 đích · HCM20: 500 đích · Bưu Yên: 800 đích</strong>. Nhanh, chính xác, phù hợp hàng Normal/Bulky vừa.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--warn-text);margin-bottom:6px">👷 Thủ công (bảng tải)</div>
+        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Phân loại bằng tay theo mã BC (A, B, C…) — mỗi bậc tối đa 12 nhóm (bậc 2 = 144 BC). Dùng khi hàng không đưa lên băng tải được, hoặc KTC nhỏ chưa có sorter.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--blue-text);margin-bottom:6px">⚡ Wheel Sorter (bánh xe điều hướng)</div>
+        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Tốc độ cao hơn Auto Sorting — hệ thống bánh xe điều tiết dòng chảy kiện hàng. Kiện được đưa vào hành lang đích hoặc xuất thẳng lên xe.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--teal-text);margin-bottom:6px">🏋️ Hàng nặng (Freight)</div>
+        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Xử lý thủ công riêng — chia bậc 1 cho 4–6 đích, pallet 500kg. Khu vực riêng trong kho, không dùng băng tải chung. DX là KTC chính xử lý Freight miền Bắc.</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Gotcha data quan trọng:</strong> <code class="inline">WHERE warehouse_type = 'KTC'</code> trong dim_warehouse trả về cả KTC lẫn KCT (111 kho). Phân biệt bằng tên: <code class="inline">LOWER(warehouse_name) LIKE 'kho trung chuyển%'</code> = KTC thực sự · <code class="inline">LIKE 'kho chuyển tiếp%'</code> = KCT.</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Luồng đơn hàng — Các trạng thái cốt lõi</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue-text)">📥 Lấy hàng (Pickup)</div>
+        <div style="font-size:12px;color:var(--text-sec);line-height:2">
+          <code class="inline">ready_to_pick</code> — Đơn mới, chờ lấy<br>
+          <code class="inline">picking</code> — Shipper đang đến shop<br>
+          <code class="inline">picked</code> — Đã lấy, hàng trên tay shipper<br>
+          <code class="inline">storing</code> — Hàng đang tại kho
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--orange)">🚚 Vận chuyển & Giao</div>
+        <div style="font-size:12px;color:var(--text-sec);line-height:2">
+          <code class="inline">transporting</code> — Trên xe tải<br>
+          <code class="inline">delivering</code> — Shipper đang giao<br>
+          <code class="inline">delivered</code> — ✓ Giao thành công<br>
+          <code class="inline">delivery_fail</code> — Giao thất bại
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--warn-text)">↩️ Trả hàng (Return)</div>
+        <div style="font-size:12px;color:var(--text-sec);line-height:2">
+          <code class="inline">waiting_to_return</code> — Hết lần retry<br>
+          <code class="inline">return_transporting</code> — Trên xe về BC lấy<br>
+          <code class="inline">returning</code> — Shipper đang trả shop<br>
+          <code class="inline">returned</code> — ✓ Trả thành công
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-mute)">Ngoài ra: <code class="inline">cancel</code> (hủy) · <code class="inline">lost</code> (mất) · <code class="inline">damage</code> (hỏng). Status luôn <strong>lowercase</strong> trong DB.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Loại hàng — 3 nhóm</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="badge b-mute">Normal</span></div>
+        <p>Đơn thông thường — phần lớn sản lượng hàng ngày</p>
+        <div style="font-size:11px;color:var(--text-mute)">Điều kiện: không phải Freight, không có tag bulky</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="badge b-warn">Bulky</span></div>
+        <p>Hàng cồng kềnh — kích thước lớn, xử lý khác tại kho</p>
+        <div style="font-size:11px;color:var(--text-mute)"><code class="inline">CONTAINS(tag, 'bulky')</code> nếu tag là ARRAY<br><code class="inline">tag LIKE '%bulky%'</code> nếu tag là VARCHAR</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="badge b-orange">Freight</span></div>
+        <p>Hàng nặng — tính phí theo kg, KTC Dương Xá xử lý chính</p>
+        <div style="font-size:11px;color:var(--text-mute)"><code class="inline">type_order LIKE '%freight%'</code></div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Phân loại hàng</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">CASE</span>
+    <span class="kw">WHEN</span> type_order <span class="kw">LIKE</span> <span class="str">'%freight%'</span>  <span class="kw">THEN</span> <span class="str">'Freight'</span>
+    <span class="kw">WHEN</span> <span class="fn">CONTAINS</span>(tag, <span class="str">'bulky'</span>)       <span class="kw">THEN</span> <span class="str">'Bulky'</span>   <span class="cmt">-- nếu tag là ARRAY</span>
+    <span class="kw">ELSE</span>                                <span class="str">'Normal'</span>
+<span class="kw">END AS</span> loai_hang</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Loại khách hàng</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:12px">3 phân khúc chính — phân loại theo <code class="inline">client_type</code> trong <code class="inline">iceberg.dwh.dim_client</code>.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Phân khúc</th><th>Định nghĩa</th><th>Đặc điểm vận hành</th><th>Cách query</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge b-blue">SME</span></td>
+            <td>Tất cả shop/merchant thông thường — cửa hàng nhỏ, doanh nghiệp vừa. Đây là phân khúc lớn nhất theo số đơn.</td>
+            <td>Volume lớn, không có SLA cam kết đặc biệt. Theo dõi GTC/LTC theo client_id là đủ.</td>
+            <td><code class="inline">ELSE 'SME'</code> (default khi không phải TTS/SHOPEE)</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-orange">SHOPEE</span></td>
+            <td>Đơn từ sàn Shopee — seller giao đơn qua Shopee API, GHN nhận từ platform. Bao gồm cả đơn drop-off (seller tự mang hàng đến kho Shopee, không cần shipper đến lấy).</td>
+            <td>Drop-off model: <code class="inline">pick_station_id = 1234</code> — cần loại khi tính GTC. API cancel phổ biến sau khi shipper đã lên đường.</td>
+            <td><code class="inline">WHEN lower(client_type) LIKE '%shopee%' THEN 'SHOPEE'</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-purple">TTS</span></td>
+            <td>TikTok Shop — sàn TMĐT TikTok. Khách hàng Key Account với SLA giao hàng riêng, được monitor chặt chẽ.</td>
+            <td>SLA 2 mức (thay đổi từ 2025-12-08). Có bảng riêng: <code class="inline">sorting_core.ontimetts</code>. Query on-time TTS luôn filter <code class="inline">client_type = 'TTS'</code>.</td>
+            <td><code class="inline">WHEN lower(client_type) LIKE '%tts%' THEN 'TTS'</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="code-block" style="margin-top:12px">
+      <div class="code-hdr"><span>SQL — Phân loại khách hàng (chuẩn)</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">CASE</span>
+    <span class="kw">WHEN</span> <span class="fn">lower</span>(c.client_type) <span class="kw">LIKE</span> <span class="str">'%tts%'</span>    <span class="kw">THEN</span> <span class="str">'TTS'</span>
+    <span class="kw">WHEN</span> <span class="fn">lower</span>(c.client_type) <span class="kw">LIKE</span> <span class="str">'%shopee%'</span> <span class="kw">THEN</span> <span class="str">'SHOPEE'</span>
+    <span class="kw">ELSE</span> <span class="str">'SME'</span>
+<span class="kw">END</span> <span class="kw">AS</span> client_type</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Sản lượng toàn công ty — Bức tranh tổng</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:14px">Nguồn: dữ liệu 63×63 (T11/2025 – T4/2026). Hiểu nền sản lượng trước khi đi vào phân tích cụm HN.</p>
+
+    <!-- KPI cards -->
+    <div class="kpi-row" style="margin-bottom:20px">
+      <div class="kpi-card"><div class="kpi-label">Nền sản lượng ổn định</div><div class="kpi-value">~24–26M</div><div class="kpi-sub">đơn / tháng (loại tháng Tết)</div></div>
+      <div class="kpi-card"><div class="kpi-label">T4/2026 (gần nhất)</div><div class="kpi-value">24.3M</div><div class="kpi-sub">đơn — ổn định so T3</div></div>
+      <div class="kpi-card"><div class="kpi-label">Cao điểm T1/2026</div><div class="kpi-value">29.2M</div><div class="kpi-sub">đơn — mùa mua sắm trước Tết</div></div>
+      <div class="kpi-card"><div class="kpi-label">Tuyến số 1</div><div class="kpi-value">HN → HCM</div><div class="kpi-sub">~5.8M đơn / 7 tháng (~3.7% tổng)</div></div>
+    </div>
+
+    <!-- Chart 1: Monthly trend -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Trend sản lượng theo tháng (triệu đơn)</div>
+      <canvas id="chart-monthly-trend" data-h="220" style="width:100%;display:block"></canvas>
+    </div>
+
+    <!-- Service mix — inline bars (CSS only) -->
+    <div class="grid-2" style="gap:20px;margin-bottom:20px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Cơ cấu loại hàng</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font-size:11px;color:var(--green-text)">Normal</span>
+              <span style="font-size:11px;color:var(--text-sec)">~81% đơn</span>
+            </div>
+            <div style="background:var(--elevated);border-radius:4px;height:8px">
+              <div style="width:81%;background:#86efac;border-radius:4px;height:8px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font-size:11px;color:var(--warn-text)">Bulky</span>
+              <span style="font-size:11px;color:var(--text-sec)">~12% đơn</span>
+            </div>
+            <div style="background:var(--elevated);border-radius:4px;height:8px">
+              <div style="width:12%;background:#fcd34d;border-radius:4px;height:8px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font-size:11px;color:var(--orange-lt)">Freight</span>
+              <span style="font-size:11px;color:var(--text-sec)">~7% đơn · &gt;55% weight</span>
+            </div>
+            <div style="background:var(--elevated);border-radius:4px;height:8px">
+              <div style="width:7%;background:#f97316;border-radius:4px;height:8px"></div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--text-mute);margin-top:8px">Freight ít đơn nhưng nặng nhất — sub-type: FKA / FSME / FB2B</p>
+      </div>
+
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Phân bổ theo vùng (tỉnh đi)</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span class="badge b-green" style="font-size:10px">Miền Bắc</span>
+              <span style="font-size:11px;color:var(--text-sec)">~45–50% tổng đơn đi</span>
+            </div>
+            <div style="background:var(--elevated);border-radius:4px;height:8px">
+              <div style="width:47%;background:#86efac;border-radius:4px;height:8px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span class="badge b-teal" style="font-size:10px">Miền Nam</span>
+              <span style="font-size:11px;color:var(--text-sec)">~35–40% tổng đơn đi</span>
+            </div>
+            <div style="background:var(--elevated);border-radius:4px;height:8px">
+              <div style="width:37%;background:#5eead4;border-radius:4px;height:8px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span class="badge b-purple" style="font-size:10px">Miền Trung</span>
+              <span style="font-size:11px;color:var(--text-sec)">~15% tổng đơn đi</span>
+            </div>
+            <div style="background:var(--elevated);border-radius:4px;height:8px">
+              <div style="width:15%;background:#c4b5fd;border-radius:4px;height:8px"></div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--text-mute);margin-top:8px">HN là tỉnh phát đơn lớn nhất — 8/10 tuyến top đều có HN là điểm đi hoặc đến</p>
+      </div>
+    </div>
+
+    <!-- Chart 2: Top routes -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">
+        Top 10 tuyến theo sản lượng — T11/2025 – T4/2026 (nghìn đơn)
+        &nbsp;<span class="badge b-orange" style="font-size:9px;vertical-align:middle">HN-origin</span>
+        &nbsp;<span class="badge b-teal" style="font-size:9px;vertical-align:middle">HCM-origin</span>
+      </div>
+      <canvas id="chart-top-routes" data-h="310" style="width:100%;display:block"></canvas>
+    </div>
+
+    <div class="callout info" style="margin-bottom:0">
+      <span class="callout-icon">💡</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>Nội tỉnh HN + HCM ≈ 9M đơn / 7 tháng</strong> — hàng BC-BC cùng tỉnh, <em>không đi qua KTC liên vùng</em>. Phải loại khi tính tải KTC inter-provincial. Freight ít đơn nhưng &gt;55% tổng weight — theo dõi riêng khi phân tích chi phí vận tải.
+      </div>
+    </div>
+  </div>
+
+  <!-- Events & seasonal patterns -->
+  <div class="sub">
+    <div class="sub-title">Sự kiện ảnh hưởng sản lượng — Pattern theo năm</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:14px">Hiểu các chu kỳ này để giải thích đúng khi số liệu tăng/giảm đột ngột — đừng vội kết luận là vấn đề vận hành.</p>
+
+    <div class="grid-2" style="gap:14px;margin-bottom:16px">
+
+      <div class="kpi-card" style="border-left:3px solid #fcd34d">
+        <div class="kpi-label">🎊 Tết Nguyên Đán (tháng 1–2)</div>
+        <div class="kpi-value" style="color:#fcd34d;font-size:20px">−40–70%</div>
+        <div class="kpi-sub">Sản lượng giảm mạnh nhất trong năm. 5–7 ngày nghỉ Tết = thực tế ~2–3 tuần ảnh hưởng (trước Tết tăng vọt, trong Tết cạn, sau Tết phục hồi chậm). T2/2026: −42% MoM.</div>
+      </div>
+
+      <div class="kpi-card" style="border-left:3px solid #86efac">
+        <div class="kpi-label">🛒 Cao điểm mua sắm trước Tết (tháng 12–1)</div>
+        <div class="kpi-value" style="color:#86efac;font-size:20px">+15–30%</div>
+        <div class="kpi-sub">Shoppers mua sắm đột biến cho dịp Tết. T1/2026: +13.5% MoM so T12/2025. Tải kho KTC tăng cao — chú ý backlog và leadtime qua kho có thể bị kéo dài.</div>
+      </div>
+
+      <div class="kpi-card" style="border-left:3px solid #f97316">
+        <div class="kpi-label">📅 Double-day sales (1/1, 2/2 ... 11/11, 12/12)</div>
+        <div class="kpi-value" style="color:#f97316;font-size:20px">+30–80%</div>
+        <div class="kpi-sub">Shopee / Lazada / TikTok Shop tổ chức flash sale vào đúng ngày trùng (1/1, 2/2, 3/3...). 11/11 và 12/12 là 2 ngày lớn nhất. Spike volume xuất hiện 1–2 ngày trước (shop pre-pack) và đúng ngày sự kiện, sau đó giảm nhanh.</div>
+      </div>
+
+      <div class="kpi-card" style="border-left:3px solid #93c5fd">
+        <div class="kpi-label">📆 Ngày 15 & đầu tháng</div>
+        <div class="kpi-value" style="color:#93c5fd;font-size:20px">+5–15%</div>
+        <div class="kpi-sub">Một số platform (đặc biệt TTS / TikTok Shop) chạy mid-month sale vào 15 hàng tháng và flash sale đầu tháng. Volume tăng nhẹ 5–15% trong 1–2 ngày. Không lớn bằng double-day nhưng đều đặn mỗi tháng.</div>
+      </div>
+
+      <div class="kpi-card" style="border-left:3px solid #c4b5fd">
+        <div class="kpi-label">🌸 8/3 · 20/10 · 14/2 (ngày tặng quà)</div>
+        <div class="kpi-value" style="color:#c4b5fd;font-size:20px">+10–25%</div>
+        <div class="kpi-sub">Ngày Phụ nữ (8/3, 20/10) và Valentine (14/2) là dịp shop hoa/quà tặng tăng đột biến. Tác động rõ hơn ở các tuyến nội tỉnh HN/HCM vì chủ yếu là giao cùng thành phố trong ngày.</div>
+      </div>
+
+      <div class="kpi-card" style="border-left:3px solid #5eead4">
+        <div class="kpi-label">📉 Sau kỳ nghỉ lễ dài (30/4–1/5, 2/9...)</div>
+        <div class="kpi-value" style="color:#5eead4;font-size:20px">−10–20%</div>
+        <div class="kpi-sub">Nghỉ lễ quốc gia dài ngày làm volume giảm. Khác Tết ở chỗ phục hồi nhanh hơn (1–2 ngày). Tải kho trong lễ giảm, sau lễ thường có backlog nhỏ do đơn tồn từ trước.</div>
+      </div>
+
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>Nguyên tắc khi phân tích:</strong> Trước khi kết luận "KPI xấu" hay "vấn đề vận hành", luôn kiểm tra xem ngày đó có trùng với sự kiện sản lượng không. Ví dụ: GTC giảm ngày 1/1 không nhất thiết do kho làm chậm — có thể do volume tăng đột biến làm backlog tăng. Cross-check bằng cách xem tuyệt đối (số đơn) cùng với tỷ lệ (%).
+      </div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">GHN vs Ninja Van — Điểm cần điều chỉnh tư duy</div>
+    <div class="compare">
+      <div class="compare-col nv">
+        <div class="compare-hdr">🔵 Ninja Van (bạn đã quen)</div>
+        <div class="compare-item">Last-mile delivery focus chính</div>
+        <div class="compare-item">Hub sorting với sortation code</div>
+        <div class="compare-item">On-time SLA đơn giản</div>
+        <div class="compare-item">BigQuery / data platform riêng</div>
+        <div class="compare-item">1-2 loại kho</div>
+      </div>
+      <div class="compare-col ghn">
+        <div class="compare-hdr">🟠 GHN (cần học lại)</div>
+        <div class="compare-item">Full-stack: lấy → sort → giao → trả</div>
+        <div class="compare-item"><strong>4 tầng:</strong> BC → KCT → KTC → KCT → BC</div>
+        <div class="compare-item">KPI có cutoff giờ cụ thể (15h / 19h)</div>
+        <div class="compare-item"><strong>Trino</strong> (không phải BigQuery, cú pháp khác)</div>
+        <div class="compare-item">3 loại kho với vai trò rất khác nhau</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-overview -->
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 2 — CỤM KHO HÀ NỘI
+═══════════════════════════════════════════════════════ -->
+<div id="tab-hanoi" class="tab-panel">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">🏭</span>
+    <div><div class="sec-title">Cụm kho Hà Nội</div><div class="sec-sub">HN02 · Dương Xá · HN03 · BC Hà Nội & Bắc Ninh</div></div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">3 KTC trực tiếp quản lý</div>
+    <div class="grid-3">
+      <!-- HN02 -->
+      <div class="hub-card" style="border-color:var(--orange-brd)">
+        <div class="hub-card-head">
+          <div class="hub-alias">HN02</div>
+          <div>
+            <div class="hub-name">KTC Hà Nội 02</div>
+            <div class="hub-id">warehouse_id: <code class="inline">1121</code> · Region: HNO</div>
+          </div>
+        </div>
+        <div class="tbl-wrap" style="margin:0">
+          <table>
+            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Sort prefix</td><td><code>A</code> (bao gồm A, A1...)</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Loại hàng</td><td>Hàng <strong>NHỎ</strong> chính — 652 tuyến</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Vị trí</td><td>Hà Nội nội thành</td></tr>
+          </table>
+        </div>
+        <div class="callout warn" style="margin:0">
+          <span class="callout-icon">⚠️</span>
+          <div style="font-size:11px"><strong>Prefix C tại HN02 = hàng FORWARD</strong> sang KTC HY01, không sort tại HN02. Đây là lỗi phổ biến nhất khi tính sản lượng sort.</div>
+        </div>
+      </div>
+      <!-- Dương Xá -->
+      <div class="hub-card" style="border-color:var(--teal-brd)">
+        <div class="hub-card-head">
+          <div class="hub-alias" style="color:var(--teal-text)">DX</div>
+          <div>
+            <div class="hub-name">KTC Dương Xá</div>
+            <div class="hub-id">warehouse_id: <code class="inline">21513000</code> · Region: SC North</div>
+          </div>
+        </div>
+        <div class="tbl-wrap" style="margin:0">
+          <table>
+            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Loại hàng</td><td>Hàng <strong>CK</strong> (Cồng Kềnh) & hàng <strong>nặng</strong> — chuyên biệt</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Sorting</td><td><strong>Không có CBS/băng chuyền</strong> — xếp/dỡ thủ công theo tuyến</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Vị trí</td><td>Dương Xá, Gia Lâm, Hà Nội</td></tr>
+          </table>
+        </div>
+        <div class="callout info" style="margin:0">
+          <span class="callout-icon">💡</span>
+          <div style="font-size:11px"><strong>DX không phải KCT (kho chuyển tiếp)</strong> — là KTC chuyên biệt hàng CK/nặng. Không có băng chuyền sort. Hàng được xếp/dỡ và phân loại thủ công theo tuyến.</div>
+        </div>
+      </div>
+      <!-- HN03 -->
+      <div class="hub-card" style="border-color:var(--purple-brd)">
+        <div class="hub-card-head">
+          <div class="hub-alias" style="color:var(--purple-text)">HN03</div>
+          <div>
+            <div class="hub-name">KTC Hà Nội 03</div>
+            <div class="hub-id">warehouse_id: <code class="inline">22487000</code> · Region: HNO</div>
+          </div>
+        </div>
+        <div class="tbl-wrap" style="margin:0">
+          <table>
+            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Sort prefix</td><td><span class="badge b-warn">Cần xác nhận với Ops</span></td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Loại hàng</td><td>Cần verify với Ops</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Vị trí</td><td><strong>Đối diện KTC HN02</strong> — cùng KCN Đài Tư, Hà Nội</td></tr>
+          </table>
+        </div>
+        <div class="callout warn" style="margin:0">
+          <span class="callout-icon">⚠️</span>
+          <div style="font-size:11px">Xác nhận sort prefix và loại hàng của HN03 với team Ops trước khi dùng trong báo cáo.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Phân biệt Hàng Sort vs Hàng Forward — quan trọng nhất</div>
+    <p>Logic cốt lõi khi tính throughput KTC. <strong>Hàng sort</strong> = KTC xử lý, phân loại thực sự. <strong>Hàng forward</strong> = chỉ transit qua, không sort tại đây.</p>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — dieu_kien_nhom (cụm HN)</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">CASE</span>
+    <span class="cmt">-- Dương Xá: hàng CK/nặng — không qua băng chuyền, không check prefix</span>
+    <span class="kw">WHEN</span> warehouse_id = <span class="num">21513000</span>
+        <span class="kw">THEN</span> <span class="str">'Hàng sort'</span>  <span class="cmt">-- tính sản lượng sort (dù không có CBS)</span>
+    <span class="cmt">-- HN02: chỉ prefix A sort tại đây (prefix C đã forward sang HY01)</span>
+    <span class="kw">WHEN</span> warehouse_id = <span class="num">1121</span>
+        <span class="kw">AND</span> <span class="fn">REGEXP_EXTRACT</span>(route_code, <span class="str">'^([A-Z]+)'</span>) = <span class="str">'A'</span>
+        <span class="kw">THEN</span> <span class="str">'Hàng sort'</span>
+    <span class="cmt">-- HN03: xác nhận thêm prefix với Ops trước khi dùng</span>
+    <span class="kw">WHEN</span> warehouse_id = <span class="num">22487000</span>
+        <span class="kw">AND</span> <span class="fn">REGEXP_EXTRACT</span>(route_code, <span class="str">'^([A-Z]+)'</span>) <span class="kw">IN</span> (<span class="str">'??'</span>) <span class="cmt">-- TODO: xác nhận prefix</span>
+        <span class="kw">THEN</span> <span class="str">'Hàng sort'</span>
+    <span class="kw">ELSE</span> <span class="str">'Hàng forward'</span>
+<span class="kw">END AS</span> dieu_kien_nhom</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Sort Manual vs AutoSorting</div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Phân loại sort</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">CASE</span>
+    <span class="kw">WHEN</span> user_id <span class="kw">LIKE</span> <span class="str">'%AUTOSORT%'</span> <span class="kw">OR</span> user_id <span class="kw">LIKE</span> <span class="str">'%WCS%'</span>
+    <span class="kw">THEN</span> <span class="str">'AutoSorting'</span>   <span class="cmt">-- WCS = Warehouse Control System (băng chuyền)</span>
+    <span class="kw">ELSE</span> <span class="str">'Manual'</span>
+<span class="kw">END AS</span> loai_sort</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Leadtime qua kho — 5 mốc thời gian</div>
+    <div class="flow" style="flex-wrap:wrap;gap:4px">
+      <div class="flow-node" style="border-color:var(--teal-brd);color:var(--teal-text)">🚛 check-in<br><small>Xe vào cổng</small></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><div class="flow-arrow" style="margin:0">→</div><small style="font-size:9px;color:var(--teal-text)">Chờ nhập</small></div>
+      <div class="flow-node hi">📥 receive_time<br><small>Scan kiện đầu tiên</small></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><div class="flow-arrow" style="margin:0">→</div><small style="font-size:9px;color:var(--orange)">Chờ rã</small></div>
+      <div class="flow-node">🔓 unpack_time<br><small>Rã kiện</small></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><div class="flow-arrow" style="margin:0">→</div><small style="font-size:9px;color:var(--warn-text)">Chờ sort</small></div>
+      <div class="flow-node">📦 pack_time<br><small>Đóng kiện</small></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><div class="flow-arrow" style="margin:0">→</div><small style="font-size:9px;color:var(--blue-text)">Chờ xuất</small></div>
+      <div class="flow-node hi">📤 export_time<br><small>Xe xuất kho</small></div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Giai đoạn</th><th>Công thức</th><th>Bảng nguồn</th><th>Cột partition</th></tr></thead>
+        <tbody>
+          <tr><td>Chờ rã kiện</td><td><code>DATE_DIFF('minute', receive_time, unpack_time)</code></td><td><code>sorting_core.cho_ra</code></td><td><code>ngay_ra</code></td></tr>
+          <tr><td>Chờ đóng kiện</td><td><code>DATE_DIFF('minute', unpack_time, pack_time)</code></td><td><code>sorting_core.cho_dong</code></td><td><code>ngay_pack</code></td></tr>
+          <tr><td>Chờ xuất kho</td><td><code>DATE_DIFF('minute', pack_time, export_time)</code></td><td><code>sorting_core.cho_xuat_new</code></td><td><code>ngay_xuat</code></td></tr>
+          <tr><td><strong>Tổng qua kho</strong></td><td><code>DATE_DIFF('minute', receive_time, export_time)</code></td><td><code>sorting_core.qua_kho</code></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">ngay_theo_ca — Ngày theo ca (không phải ngày thực)</div>
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div>Hàng xử lý từ <strong>0:00–6:00 sáng</strong> được tính vào <strong>ngày hôm trước</strong> (ca đêm hôm trước). Dùng <code class="inline">DATE(action_time)</code> thẳng sẽ bị lệch ngày cho ca đêm. Cột <code class="inline">ngay_theo_ca</code> trong truck_north là <strong>VARCHAR</strong> — không dùng date_format(), dùng <code class="inline">SUBSTR(col, 1, 7)</code> để lấy tháng.</div>
+    </div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — ngay_theo_ca</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">CASE</span>
+    <span class="cmt">-- KTC DX ca đêm kết thúc trước 7h (sớm hơn các kho khác)</span>
+    <span class="kw">WHEN</span> warehouse_id = <span class="num">21513000</span> <span class="kw">AND</span> <span class="fn">HOUR</span>(action_time) <span class="kw">BETWEEN</span> 0 <span class="kw">AND</span> 7
+        <span class="kw">THEN</span> <span class="fn">DATE</span>(action_time) - <span class="kw">INTERVAL</span> <span class="str">'1'</span> <span class="kw">DAY</span>
+    <span class="cmt">-- Các kho còn lại: ca đêm 0:00–6:00</span>
+    <span class="kw">WHEN</span> <span class="fn">HOUR</span>(action_time) <span class="kw">BETWEEN</span> 0 <span class="kw">AND</span> 6
+        <span class="kw">THEN</span> <span class="fn">DATE</span>(action_time) - <span class="kw">INTERVAL</span> <span class="str">'1'</span> <span class="kw">DAY</span>
+    <span class="kw">ELSE</span> <span class="fn">DATE</span>(action_time)
+<span class="kw">END AS</span> ngay_theo_ca</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Phạm vi BC quản lý — Hà Nội & Bắc Ninh</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">BC Hà Nội</div>
+        <p style="font-size:12px">Toàn bộ bưu cục có <code class="inline">province_name = 'Hà Nội'</code> trong dim_warehouse. Lấy/giao nội thành Hà Nội, feed về các KTC cụm HN.</p>
+        <div style="font-size:11px;color:var(--text-mute)">Filter: <code class="inline">WHERE province_name = 'Hà Nội' AND warehouse_type = 'BC'</code></div>
+      </div>
+      <div class="card">
+        <div class="card-title">BC Bắc Ninh</div>
+        <p style="font-size:12px">Bưu cục tỉnh Bắc Ninh. Khu vực công nghiệp lớn (Samsung, VSIP...) — volume cao. Feed về KTC qua KCT Bắc Ninh (<code class="inline">20409000</code>).</p>
+        <div style="font-size:11px;color:var(--text-mute)">Filter: <code class="inline">WHERE province_name = 'Bắc Ninh' AND warehouse_type = 'BC'</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Lane Type — Phân loại tuyến xe</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Lane</th><th>Điều kiện</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge b-red">FTL</span></td><td><code>stoppoint_name LIKE '%FTL%'</code></td><td>Full Truck Load</td></tr>
+          <tr><td><span class="badge b-purple">Liên Vùng</span></td><td>≥2 KTC khác vùng hoặc qua cả HN + HCM</td><td>HN → Đà Nẵng → HCM</td></tr>
+          <tr><td><span class="badge b-orange">Nội Thành</span></td><td>Chỉ 1 tỉnh là HN hoặc HCM</td><td>Nội thành Hà Nội</td></tr>
+          <tr><td><span class="badge b-blue">Nội Tỉnh</span></td><td>Chỉ 1 tỉnh (không phải HN/HCM)</td><td>Nội tỉnh Bắc Ninh</td></tr>
+          <tr><td><span class="badge b-teal">Nội Vùng</span></td><td>Nhiều tỉnh trong cùng vùng</td><td>HN → Bắc Ninh → Hải Dương</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Flow hàng A → Z -->
+  <div class="sub">
+    <div class="sub-title">Flow hàng đầu đến cuối — Đơn đi qua kho như thế nào?</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:16px">Hiểu đúng flow để biết đang đo leadtime ở giai đoạn nào và dữ liệu nào cần dùng.</p>
+
+    <!-- Full flow diagram -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:16px 20px;margin-bottom:16px;overflow-x:auto">
+      <div style="font-size:11px;font-weight:700;color:var(--text-mute);margin-bottom:12px;letter-spacing:0.5px">FULL FLOW — HN02 (ví dụ đơn HN → TP.HCM)</div>
+      <div style="display:flex;align-items:center;gap:0;flex-wrap:nowrap;min-width:860px">
+
+        <div style="text-align:center;min-width:80px">
+          <div style="font-size:18px">🏪</div>
+          <div style="font-size:10px;color:var(--orange);font-weight:700;margin:3px 0">Shop tạo đơn</div>
+          <div style="font-size:9px;color:var(--text-mute)">ready_to_pick</div>
+        </div>
+        <div style="color:var(--text-mute);font-size:10px;padding:0 4px;text-align:center">→<br><span style="color:var(--text-dim);font-size:9px">GTC lấy</span></div>
+
+        <div style="text-align:center;min-width:80px">
+          <div style="font-size:18px">🛵</div>
+          <div style="font-size:10px;color:var(--orange);font-weight:700;margin:3px 0">BC lấy gốc</div>
+          <div style="font-size:9px;color:var(--text-mute)">storing → transporting</div>
+        </div>
+        <div style="color:var(--text-mute);font-size:10px;padding:0 4px;text-align:center">→<br><span style="color:var(--text-dim);font-size:9px">Xe tuyến</span></div>
+
+        <div style="text-align:center;min-width:100px;background:var(--elevated);border-radius:6px;padding:6px 8px;border:1px solid var(--orange-brd)">
+          <div style="font-size:18px">🏭</div>
+          <div style="font-size:10px;color:var(--orange);font-weight:700;margin:3px 0">KTC HN02<br>/ DX / HN03</div>
+          <div style="font-size:9px;color:var(--text-mute)">storing (nhận kiện)</div>
+          <div style="font-size:9px;color:var(--text-mute)">→ rã kiện → sort → đóng</div>
+        </div>
+        <div style="color:var(--text-mute);font-size:10px;padding:0 4px;text-align:center">→<br><span style="color:var(--text-dim);font-size:9px">Xe trục</span></div>
+
+        <div style="text-align:center;min-width:90px;background:var(--elevated);border-radius:6px;padding:6px 8px;border:1px solid var(--border)">
+          <div style="font-size:18px">🔄</div>
+          <div style="font-size:10px;color:var(--text-sec);font-weight:700;margin:3px 0">KCT trung gian<br>(nếu có)</div>
+          <div style="font-size:9px;color:var(--text-mute)">Kho Chuyển Tiếp</div>
+          <div style="font-size:9px;color:var(--text-mute)">Không sort lại — chỉ chuyển kiện</div>
+        </div>
+        <div style="color:var(--text-mute);font-size:10px;padding:0 4px;text-align:center">→<br><span style="color:var(--text-dim);font-size:9px">Xe tuyến</span></div>
+
+        <div style="text-align:center;min-width:100px;background:var(--elevated);border-radius:6px;padding:6px 8px;border:1px solid var(--teal-brd)">
+          <div style="font-size:18px">🏭</div>
+          <div style="font-size:10px;color:var(--teal-text);font-weight:700;margin:3px 0">KTC đích<br>(VD: HCM01)</div>
+          <div style="font-size:9px;color:var(--text-mute)">Nhận → rã → sort → đóng</div>
+          <div style="font-size:9px;color:var(--text-mute)">theo BC giao đích</div>
+        </div>
+        <div style="color:var(--text-mute);font-size:10px;padding:0 4px;text-align:center">→<br><span style="color:var(--text-dim);font-size:9px">Xe nội tỉnh</span></div>
+
+        <div style="text-align:center;min-width:80px">
+          <div style="font-size:18px">🏪</div>
+          <div style="font-size:10px;color:var(--teal-text);font-weight:700;margin:3px 0">BC giao đích</div>
+          <div style="font-size:9px;color:var(--text-mute)">storing → delivering</div>
+        </div>
+        <div style="color:var(--text-mute);font-size:10px;padding:0 4px;text-align:center">→<br><span style="color:var(--text-dim);font-size:9px">GTC giao</span></div>
+
+        <div style="text-align:center;min-width:70px">
+          <div style="font-size:18px">📦</div>
+          <div style="font-size:10px;color:var(--green-text);font-weight:700;margin:3px 0">Người nhận</div>
+          <div style="font-size:9px;color:var(--text-mute)">delivered ✓</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- KTC vs KCT so sánh -->
+    <div class="grid-2" style="gap:14px;margin-bottom:16px">
+      <div style="background:var(--surface);border:1px solid var(--orange-brd);border-radius:9px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:8px">🏭 KTC — Kho Trung Chuyển (có sorter)</div>
+        <ul style="font-size:12px;color:var(--text-sec);padding-left:16px;line-height:2">
+          <li>HN02/HN03: có băng chuyền tự động (AutoSort/CBS)</li>
+          <li>DX: <strong>không có CBS</strong> — hàng CK/nặng, xếp dỡ thủ công</li>
+          <li>Nhận kiện → <strong>rã kiện</strong> → sort hàng → đóng kiện mới</li>
+          <li>Hàng đi đúng chute theo sort_code (prefix A, HY...)</li>
+          <li>KTC cụm HN: HN02 (1121) · DX (21513000) · HN03 (22487000)</li>
+          <li>Đo được 5 mốc leadtime qua kho (xem bên dưới)</li>
+        </ul>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:8px">🔄 KCT — Kho Chuyển Tiếp (không sorter)</div>
+        <ul style="font-size:12px;color:var(--text-sec);padding-left:16px;line-height:2">
+          <li>Không có băng chuyền — chỉ giao nhận kiện nguyên</li>
+          <li>Hàng <strong>không bị rã ra</strong> → không sort lại</li>
+          <li>Vai trò: điểm trung chuyển trên tuyến dài</li>
+          <li>Trong <code class="inline">dim_warehouse</code>: cùng <code>warehouse_type='KTC'</code> — phân biệt bằng tên: <code>LIKE 'kho chuyển tiếp%'</code></li>
+          <li>Leadtime qua KCT ngắn hơn KTC (không có bước sort)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- order_code vs package_code note -->
+    <div class="callout info" style="margin-bottom:14px">
+      <span class="callout-icon">📦</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>order_code vs package_code:</strong> Một <strong>order_code</strong> = 1 đơn hàng (do shop tạo). Một <strong>package_code</strong> (kiện) có thể chứa nhiều order_code gom lại. Tại mỗi chặng, sau khi rã kiện cũ và đóng kiện mới, các order_code được gán sang package_code mới — nên 1 đơn sẽ có nhiều package_code khác nhau qua từng KTC. Trong bảng <code>inside_package_history</code>, đơn nhiều kiện có suffix <code>_1</code>, <code>_2</code> thêm vào order_code.
+      </div>
+    </div>
+
+    <!-- Leadtime definitions -->
+    <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">⏱ Leadtime qua kho — 5 mốc đo đạc</div>
+    <div class="tbl-wrap" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>Tên Leadtime</th><th>Từ mốc</th><th>Đến mốc</th><th>Ý nghĩa</th><th>Bảng dữ liệu</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(20,184,166,0.05)">
+            <td><span class="badge b-teal">Chờ nhập</span></td>
+            <td>xe check-in tại kho</td>
+            <td>kiện hàng đầu tiên được scan nhập</td>
+            <td>Thời gian từ lúc xe check-in tại cổng kho đến lúc kiện đầu tiên trên xe được scan vào hệ thống. Phản ánh tốc độ tiếp nhận xe, mở cửa, bắt đầu dỡ hàng.</td>
+            <td><code>sorting_core.truck_north</code><br><small style="color:var(--text-mute)">(check-in time từ trip; first scan từ IPH)</small></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-orange">Chờ rã kiện</span></td>
+            <td><code>receive_time</code></td>
+            <td><code>unpack_time</code></td>
+            <td>Thời gian từ lúc kiện được scan nhập kho đến lúc kiện được rã ra. Phản ánh tốc độ rã hàng tại kho.</td>
+            <td><code>sorting_core.cho_ra</code><br><code>sorting_core.qua_kho</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-warn">Chờ sort / đóng</span></td>
+            <td><code>unpack_time</code></td>
+            <td><code>pack_time</code></td>
+            <td>Thời gian từ rã kiện đến đóng kiện mới. Phản ánh tốc độ băng chuyền và bước sort hàng.</td>
+            <td><code>sorting_core.cho_dong</code><br><code>sorting_core.qua_kho</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-blue">Chờ xuất</span></td>
+            <td><code>pack_time</code></td>
+            <td><code>export_time</code></td>
+            <td>Thời gian từ đóng kiện xong đến lúc kiện được tải lên xe xuất. Phản ánh thời gian chờ xe / lịch lên hàng.</td>
+            <td><code>sorting_core.cho_xuat_new</code><br><code>sorting_core.qua_kho</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-green">Tổng qua kho</span></td>
+            <td><code>receive_time</code></td>
+            <td><code>export_time</code></td>
+            <td>Toàn bộ thời gian đơn nằm trong kho từ nhập đến xuất. KPI tổng hợp nhất cho hiệu suất kho. = Chờ rã + Chờ sort + Chờ xuất.</td>
+            <td><code>sorting_core.qua_kho</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>Cách dùng bảng <code>sorting_core.qua_kho</code>:</strong> Bảng này tổng hợp đủ 4 mốc và 4 leadtime tính sẵn (đơn vị phút) cho từng đơn × từng kho. Là bảng duy nhất để phân tích toàn hành trình qua kho mà không cần tự join nhiều bảng. Filter theo <code>warehouse_id</code> để lấy đúng cụm HN.
+      </div>
+    </div>
+  </div>
+
+  <!-- Linehaul types -->
+  <div class="sub">
+    <div class="sub-title">Tuyến Linehaul từ/đến cụm HN — Phân loại tuyến</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:14px">Linehaul = vận tải đường dài giữa các điểm kho theo lịch cố định. Hiểu phân loại tuyến giúp phân tích chi phí, leadtime, và tải xe đúng.</p>
+    <div class="tbl-wrap" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>Loại tuyến</th><th>Ví dụ cụm HN</th><th>Đặc điểm</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge b-orange">KTC → KTC</span><br><span style="font-size:10px;color:var(--text-mute)">Liên vùng</span></td>
+            <td>HN02 → HCM01 · HN02 → Đà Nẵng · DX → Nghệ An</td>
+            <td>Xe trục đường dài — đi thẳng hoặc qua 1–2 điểm dừng trung gian. Lịch chạy cố định (giờ xuất phát). Đây là tuyến xương sống của mạng lưới.</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-blue">KTC → KCT</span><br><span style="font-size:10px;color:var(--text-mute)">Nội vùng</span></td>
+            <td>HN02 → KCT Bắc Giang · HN02 → KCT Hải Dương</td>
+            <td>Xe gom hàng tỉnh lân cận — thường nhỏ hơn xe trục. KCT nhận kiện nguyên từ HN02, rồi phân phối xuống BC địa phương.</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-green">KTC → BC</span><br><span style="font-size:10px;color:var(--text-mute)">Phân phối</span></td>
+            <td>HN02 → BC Hoàng Mai · DX → BC Gia Lâm · HN03 → BC Đông Anh</td>
+            <td>Xe phân phối xuống BC trong thành phố và tỉnh lân cận. Chạy sau khi sort xong, thường 2h–6h sáng. Khoảng cách ngắn, cần đúng giờ để BC kịp giao ban ngày.</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-teal">KCT → KTC đích</span><br><span style="font-size:10px;color:var(--text-mute)">Direct (tối ưu)</span></td>
+            <td>KCT Bắc Ninh → KTC HCM (bỏ qua HN02)</td>
+            <td>Tuyến tối ưu — KCT đi thẳng đến KTC cuối, cắt bỏ bước qua KTC đầu. Giảm leadtime và chi phí xếp/dỡ. Áp dụng khi sản lượng tuyến đủ lớn.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div style="font-size:12px;line-height:1.7"><strong>Trong data:</strong> bảng <code class="inline">sorting_core.truck_north</code> lưu thông tin chuyến xe theo ngày ca (<code>ngay_theo_ca</code> là VARCHAR!). Bảng <code class="inline">iceberg.clean.parsed_transportation_history</code> lưu từng stop của chuyến — <code>hub = 'LHAN'</code> là chuyến thuộc vùng HN/HY.</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Stop cost — Đơn vị tính chi phí xử lý kho</div>
+    <p>Mỗi lần hàng qua kho tính phí theo <strong>stop</strong>. 1 stop = 4kg. Đơn dưới 4kg = 1 stop.</p>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Tính stop</span><button class="copy-btn">Copy</button></div>
+      <pre>stop = <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> max_weight &lt; <span class="num">4000</span> <span class="kw">THEN</span> <span class="num">1</span>
+    <span class="kw">ELSE</span> max_weight / <span class="num">4000.0</span>
+<span class="kw">END</span>
+<span class="cmt">-- chi_phi = stop × don_gia_per_stop</span></pre>
+    </div>
+  </div>
+
+</div><!-- /tab-hanoi -->
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 3 — WORKFLOW
+═══════════════════════════════════════════════════════ -->
+<div id="tab-workflow" class="tab-panel">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">🔄</span>
+    <div><div class="sec-title">Workflow — Các loại công việc</div><div class="sec-sub">Nhận request → xử lý → output theo từng loại</div></div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div>Hầu hết request đến từ team Ops, team lead, hoặc các bộ phận liên quan. Identify đúng loại request để đi đúng luồng xử lý.</div>
+  </div>
+
+  <div class="wf-grid">
+
+    <!-- 1. Ad-hoc xuất dữ liệu -->
+    <div class="wf-card">
+      <div class="wf-card-head">
+        <span class="wf-icon">📤</span>
+        <div>
+          <div class="wf-type">Ad-hoc xuất dữ liệu</div>
+          <div class="wf-when">Khi nào: "cho anh/chị xem số...", "lấy list...", "export danh sách..."</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Hỏi rõ: khoảng thời gian, kho/tỉnh/loại hàng cần lọc</li>
+        <li><span class="wf-step-num">2</span> Viết query Trino theo request</li>
+        <li><span class="wf-step-num">3</span> Chạy trên Superset hoặc Trino CLI</li>
+        <li><span class="wf-step-num">4</span> Export CSV / paste vào Google Sheet gửi lại</li>
+      </ul>
+      <div class="wf-output">📄 Output: File CSV / Google Sheet link</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">Trino / Superset</span>
+        <span class="wf-tool-chip">Google Sheets</span>
+      </div>
+    </div>
+
+    <!-- 2. Xử lý dữ liệu thô -->
+    <div class="wf-card">
+      <div class="wf-card-head">
+        <span class="wf-icon">🔧</span>
+        <div>
+          <div class="wf-type">Xử lý dữ liệu thô</div>
+          <div class="wf-when">Khi nào: nhận file Excel/CSV cần làm sạch, join, tính toán</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Đọc schema file đầu vào (encoding, cột, null)</li>
+        <li><span class="wf-step-num">2</span> Xử lý bằng Python/pandas hoặc SQL</li>
+        <li><span class="wf-step-num">3</span> Validate output (shape, null check, sum so khớp)</li>
+        <li><span class="wf-step-num">4</span> Gửi lại file đã xử lý</li>
+      </ul>
+      <div class="wf-output">📄 Output: File Excel / CSV đã làm sạch</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">Python / pandas</span>
+        <span class="wf-tool-chip">Trino</span>
+      </div>
+    </div>
+
+    <!-- 3. Tạo báo cáo -->
+    <div class="wf-card">
+      <div class="wf-card-head">
+        <span class="wf-icon">📊</span>
+        <div>
+          <div class="wf-type">Tạo báo cáo định kỳ</div>
+          <div class="wf-when">Khi nào: báo cáo tuần/tháng, báo cáo sếp, review vận hành</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Xác nhận format: HTML (tương tác) hay PDF (gửi sếp) hay Google Doc</li>
+        <li><span class="wf-step-num">2</span> Query data từ Trino theo kỳ cần báo cáo</li>
+        <li><span class="wf-step-num">3</span> Build report theo template chuẩn</li>
+        <li><span class="wf-step-num">4</span> Review số lại với Ops trước khi gửi</li>
+        <li><span class="wf-step-num">5</span> Share link / gửi file qua GTalk hoặc email</li>
+      </ul>
+      <div class="wf-output">📑 Output: HTML report / PDF / Google Doc</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">Trino</span>
+        <span class="wf-tool-chip">HTML / Python PDF</span>
+        <span class="wf-tool-chip">Google Docs</span>
+      </div>
+    </div>
+
+    <!-- 4. Bắn bot chat -->
+    <div class="wf-card">
+      <div class="wf-card-head">
+        <span class="wf-icon">🤖</span>
+        <div>
+          <div class="wf-type">Bắn bot trên kênh chat</div>
+          <div class="wf-when">Khi nào: cần push số liệu tự động lên GTalk/Telegram channel hàng ngày/giờ</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Viết query lấy số liệu cần push (KPI ngày, alert...)</li>
+        <li><span class="wf-step-num">2</span> Viết script trigger: <strong>Python</strong> (gọi API Superset / Trino trực tiếp) hoặc <strong>Google Apps Script</strong> từ Google Sheet (trigger theo lịch)</li>
+        <li><span class="wf-step-num">3</span> Format message và gọi bot webhook — <strong>GTalk bot</strong> (nội bộ) hoặc <strong>Telegram bot</strong></li>
+        <li><span class="wf-step-num">4</span> Test thủ công, kiểm tra message format</li>
+        <li><span class="wf-step-num">5</span> Deploy schedule (cron job / Apps Script trigger timed)</li>
+      </ul>
+      <div class="wf-output">💬 Output: Tin nhắn tự động trên GTalk/Telegram channel</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">GTalk Bot</span>
+        <span class="wf-tool-chip">Telegram Bot</span>
+        <span class="wf-tool-chip">Python / Apps Script</span>
+      </div>
+      <div class="callout tip" style="margin:8px 0 0 0;padding:8px 10px">
+        <span class="callout-icon">📖</span>
+        <div style="font-size:11px">Xem hướng dẫn cài GTalk bot đầy đủ: <strong>"GTalk Integration Guide"</strong> trong Telegram Desktop (tìm trong channel team).</div>
+      </div>
+    </div>
+
+    <!-- 5. Build Metabase -->
+    <div class="wf-card">
+      <div class="wf-card-head">
+        <span class="wf-icon">📈</span>
+        <div>
+          <div class="wf-type">Build Dashboard Metabase</div>
+          <div class="wf-when">Khi nào: cần dashboard tracking KPI theo ngày, theo kho</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Xác nhận metrics cần theo dõi + audience (Ops, Manager...)</li>
+        <li><span class="wf-step-num">2</span> Chọn phương pháp phù hợp:</li>
+      </ul>
+      <div style="margin:6px 0 8px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px">
+          <div style="font-size:11px;font-weight:700;color:var(--green-text);margin-bottom:4px">⚡ Query trực tiếp (nhẹ)</div>
+          <div style="font-size:11px;color:var(--text-sec);line-height:1.6">Viết Native Query Trino thẳng trong Metabase. Phù hợp query nhanh, ít dữ liệu, không cần lên lịch refresh.</div>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px">
+          <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px">🏗 Tạo bảng + AI Portal (nặng)</div>
+          <div style="font-size:11px;color:var(--text-sec);line-height:1.6">Tạo bảng tổng hợp qua <strong>AI Portal Data Job</strong>, lên lịch chạy định kỳ. Metabase chỉ <code>SELECT *</code> từ bảng đó — nhẹ, nhanh, ổn định.</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">3</span> Thiết kế chart (bar/line/number card) + đặt filter date/warehouse</li>
+        <li><span class="wf-step-num">4</span> Share link, add vào bộ sưu tập team</li>
+      </ul>
+      <div class="wf-output">📊 Output: Metabase dashboard link</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">data-bi.ghn.vn</span>
+        <span class="wf-tool-chip">Trino Native Query</span>
+        <span class="wf-tool-chip">AI Portal Data Job</span>
+      </div>
+    </div>
+
+    <!-- 6. Looker / Google Docs -->
+    <div class="wf-card">
+      <div class="wf-card-head">
+        <span class="wf-icon">📝</span>
+        <div>
+          <div class="wf-type">Build báo cáo Looker / Google Docs</div>
+          <div class="wf-when">Khi nào: báo cáo share với stakeholder rộng, gửi sếp, cần embed chart đẹp</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Export dữ liệu từ Superset SQL Lab ra CSV</li>
+        <li><span class="wf-step-num">2</span> Build chart / table trên Looker Studio hoặc Google Sheet</li>
+        <li><span class="wf-step-num">3</span> Nếu là Doc: viết theo chuẩn executive (số → insight → recommendation)</li>
+        <li><span class="wf-step-num">4</span> Set quyền share: <strong>dùng email nội bộ GHN</strong> (<code>@ghn.vn</code>) — chọn <em>Viewer</em> hoặc <em>Editor</em> tùy yêu cầu. Không share public link trừ khi được yêu cầu.</li>
+      </ul>
+      <div class="wf-output">🔗 Output: Looker Studio report link / Google Doc</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">Looker Studio</span>
+        <span class="wf-tool-chip">Google Docs</span>
+        <span class="wf-tool-chip">Superset SQL Lab</span>
+      </div>
+    </div>
+
+    <!-- 7. Phân tích & nhận định -->
+    <div class="wf-card" style="border-color:var(--orange-brd)">
+      <div class="wf-card-head">
+        <span class="wf-icon">🔍</span>
+        <div>
+          <div class="wf-type">Phân tích & đưa ra nhận định</div>
+          <div class="wf-when">Khi nào: "tại sao số X giảm?", "phân tích nguyên nhân...", "đề xuất cải thiện..." — theo yêu cầu stakeholder</div>
+        </div>
+      </div>
+      <ul class="wf-steps">
+        <li><span class="wf-step-num">1</span> Nhận yêu cầu từ stakeholder (Ops, Manager, Director) — làm rõ câu hỏi cụ thể</li>
+        <li><span class="wf-step-num">2</span> Xác định metric và chiều phân tích (theo ngày, kho, loại hàng...)</li>
+        <li><span class="wf-step-num">3</span> Query data nhiều chiều, tìm pattern bất thường</li>
+        <li><span class="wf-step-num">4</span> Cross-check với team Ops (số liệu có phản ánh thực tế?)</li>
+        <li><span class="wf-step-num">5</span> Viết nhận định + đề xuất actionable (ai làm gì, deadline)</li>
+        <li><span class="wf-step-num">6</span> Chọn format output phù hợp yêu cầu và audience (xem bên dưới)</li>
+      </ul>
+      <div style="margin:6px 0 8px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px">
+          <div style="font-size:11px;font-weight:700;color:var(--blue-text);margin-bottom:4px">📊 HTML report</div>
+          <div style="font-size:11px;color:var(--text-sec);line-height:1.6">Phân tích phức tạp, nhiều chart, cần filter tương tác, share link cho cả team.</div>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px">
+          <div style="font-size:11px;font-weight:700;color:var(--text-sec);margin-bottom:4px">📄 Google Doc / PDF</div>
+          <div style="font-size:11px;color:var(--text-sec);line-height:1.6">Báo cáo gửi sếp, executive summary — text-first, số liệu quan trọng, actionable.</div>
+        </div>
+      </div>
+      <div class="wf-output">📋 Output: HTML report hoặc Google Doc/PDF — tùy stakeholder yêu cầu</div>
+      <div class="wf-tools">
+        <span class="wf-tool-chip">Trino</span>
+        <span class="wf-tool-chip">Metabase / Superset</span>
+        <span class="wf-tool-chip">HTML / Google Docs</span>
+      </div>
+    </div>
+
+  </div><!-- /wf-grid -->
+
+</div><!-- /tab-workflow -->
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 4 — DATASET
+═══════════════════════════════════════════════════════ -->
+<div id="tab-dataset" class="tab-panel">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">🗄</span>
+    <div><div class="sec-title">Dataset — Catalog bảng dữ liệu</div><div class="sec-sub">Toàn bộ bảng hay dùng · Schema · Gotcha · Cách xin quyền</div></div>
+  </div>
+
+  <!-- Access request -->
+  <div class="callout ok" style="margin-bottom:24px">
+    <span class="callout-icon">🔑</span>
+    <div>
+      <strong>Xin quyền truy cập bảng/schema:</strong> Gửi request cho <strong>team Data Engineering</strong> qua GTalk, kèm:
+      <strong>(1)</strong> Full path bảng: <code class="inline">catalog.schema.table</code> —
+      <strong>(2)</strong> Mục đích sử dụng —
+      <strong>(3)</strong> Loại quyền cần (thường là read-only).
+      Thời gian cấp quyền thường trong ngày làm việc.
+    </div>
+  </div>
+
+  <!-- Schema cần xin ngay -->
+  <div class="sub">
+    <div class="sub-title">Schema cần xin quyền ngay từ đầu</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Schema</th><th>Mô tả</th><th>Ưu tiên</th></tr></thead>
+        <tbody>
+          <tr><td><code>iceberg.sorting_core</code></td><td>KPI kho, leadtime, truck, GTC/LTC/TTC — bảng chính hàng ngày</td><td><span class="badge b-red">Bắt buộc ngay</span></td></tr>
+          <tr><td><code>iceberg.clean</code></td><td>Dữ liệu đơn hàng đã clean — nguồn số liệu chính thức</td><td><span class="badge b-red">Bắt buộc ngay</span></td></tr>
+          <tr><td><code>iceberg.dwh</code></td><td>Dimension tables (warehouse, client, employee)</td><td><span class="badge b-red">Bắt buộc ngay</span></td></tr>
+          <tr><td><code>"dw-ghn".data_internalv2</code></td><td>Dữ liệu operational raw, realtime</td><td><span class="badge b-orange">Cần khi làm realtime</span></td></tr>
+          <tr><td><code>iceberg.raw</code></td><td>CDC raw data — dùng khi cần verify hoặc data mới nhất</td><td><span class="badge b-warn">Khi cần</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Group nav -->
+  <div class="ds-group-nav">
+    <button class="ds-group-btn active" data-group="ds-inside">📦 Đơn hàng</button>
+    <button class="ds-group-btn" data-group="ds-warehouse">🗂 sorting_core (Bảng tự tạo)</button>
+    <button class="ds-group-btn" data-group="ds-transport">🚚 Vận tải</button>
+    <button class="ds-group-btn" data-group="ds-lastmile">🛵 Last Mile</button>
+    <button class="ds-group-btn" data-group="ds-dim">📚 Dimension</button>
+  </div>
+
+  <!-- Group 1: Đơn hàng -->
+  <div class="ds-group" id="ds-inside">
+    <div class="ds-group-title">📦 Đơn hàng (Inside)</div>
+
+    <div class="callout info" style="margin-bottom:16px">
+      <span class="callout-icon">ℹ️</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>3 bảng cùng schema, khác partition key:</strong> cùng 126 cột, cùng grain (1 order_code = 1 row), khác nhau ở timestamp dt được partition theo.<br>
+        Quan hệ inclusion: <code>createddate ⊇ endpicktime ⊇ enddeliverytime</code> — bảng createddate có nhiều đơn nhất; bảng enddeliverytime chỉ có đơn đã có sự kiện giao.<br>
+        <strong>Data reflects trạng thái hiện tại</strong> — không phải snapshot. Khi status đơn thay đổi, cả 3 bảng cùng update.
+      </div>
+    </div>
+
+    <div class="ds-cards">
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.clean.online_core_corev2_shippingorder_createddate</div>
+        <div class="ds-card-desc">Đơn hàng partition theo <strong>ngày tạo đơn</strong>. Bảng rộng nhất — chứa <em>mọi đơn</em> kể cả chưa pick/giao. Dùng cho tổng quan, backlog, đơn mới.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt (VARCHAR YYYY-MM-DD)</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 row = 1 order_code</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">126 cột</span><span class="chip-val">6 warehouse, 7 timestamp, ARRAY, STRUCT</span></div>
+        </div>
+        <div class="ds-cols" style="line-height:1.9">
+          <strong>Identifier:</strong> order_code (GYTU…/VNGH…) · client_order_code · _id (MongoDB, không dùng phân tích)<br>
+          <strong>Phân loại đơn:</strong> status · type_order (NULL=thường, 'freight'=B2B nặng) · is_b2b · <code>tag ARRAY</code> — dùng <code>CONTAINS(tag,'bulky')</code> để detect hàng cồng kềnh<br>
+          <strong>Kho hàng:</strong> pick_warehouse_id · deliver_warehouse_id · current_warehouse_id · return_warehouse_id · next_warehouse_id — TẤT CẢ không bao giờ NULL (kể cả đơn cancel/lost)<br>
+          <strong>Trọng lượng:</strong> weight (gram thực) · converted_weight (gram quy đổi) · length/width/height (cm)<br>
+          <strong>Timestamp chính:</strong> created_date · end_pick_time · end_delivery_time · s2r_time (bắt đầu hoàn) · finish_date · leadtime (deadline giao — 99.97% = 23:59:59 ngày cam kết)<br>
+          <strong>Đếm lần:</strong> num_pick · num_deliver (≥3 → trigger waiting_to_return) · num_return<br>
+          <strong>sort_code:</strong> prefix xác định KTC sort: <code>A</code>=HN02(1121), <code>HY</code>=HY01, <code>C/D/E/U</code>=HCM01, <code>S</code>=Đà Nẵng — empty string ≠ NULL = chưa qua sorter
+        </div>
+        <div class="ds-gotcha"><span>🚨</span><span><strong>BẮT BUỘC filter dt.</strong> Thiếu → lỗi partition pruning. <code>dt</code> là VARCHAR: <code>WHERE dt &gt;= date_format(date_add('day',-7,current_date),'%Y-%m-%d')</code></span></div>
+        <div class="ds-note"><span>⚠️</span><span><code>last_delivered_time</code> = <code>end_delivery_time</code> (alias 100%) — chỉ dùng <code>end_delivery_time</code>. <code>first_return_time</code> = <code>s2r_time</code> — chỉ dùng <code>s2r_time</code>.</span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.clean.online_core_corev2_shippingorder_endpicktime</div>
+        <div class="ds-card-desc">Đơn hàng partition theo <strong>ngày kết thúc lấy hàng</strong> (<code>end_pick_time</code>). Bảng phù hợp nhất để tính LTC theo ngày lấy.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt (VARCHAR) = date(end_pick_time)</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 row = 1 order_code</span></div>
+        </div>
+        <div class="ds-cols"><strong>Dùng khi:</strong> phân tích LTC (tỷ lệ lấy thành công), đếm đơn đã được pick trong ngày, phân tích ca lấy hàng</div>
+        <div class="ds-gotcha"><span>🚨</span><span>BẮT BUỘC filter dt (VARCHAR). Đơn chưa pick sẽ không có trong bảng này. <code>end_pick_time</code> bị clear khi đơn REVERT — <code>first_picked_time</code> thì không.</span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.clean.online_core_corev2_shippingorder_enddeliverytime</div>
+        <div class="ds-card-desc">Đơn hàng partition theo <strong>ngày có sự kiện giao</strong> (<code>end_delivery_time</code>). Dùng cho GTC / TTC. Lưu ý: chứa cả đơn trả (~7%) vì <code>end_delivery_time</code> được set khi giao chạm tay người nhận.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt (VARCHAR) = date(end_delivery_time)</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 row = 1 order_code</span></div>
+        </div>
+        <div class="ds-cols"><strong>Phân biệt GTC vs TTC:</strong> <code>WHEN end_delivery_time &lt; leadtime THEN 'RETURN' ELSE 'DELIVER'</code> — cột <code>leadtime</code> = deadline giao hàng cam kết. Cutoff GTC/TTC = 15:00.</div>
+        <div class="ds-note"><span>⚠️</span><span>Volume cùng dt KHÔNG so sánh được giữa 3 bảng — mỗi bảng đếm sự kiện khác nhau. Đơn giao hôm nay có thể là backlog từ hôm qua trong bảng này.</span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.clean.shipping_order_processing_realtime</div>
+        <div class="ds-card-desc">Trạng thái đơn hàng <strong>realtime</strong> — theo dõi action cuối cùng và vị trí kho hiện tại. Delay vài giây từ CDC.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Delay</span><span class="chip-val">&lt;1 phút (CDC)</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột quan trọng:</strong> order_code · action · status · current_warehouse_id · next_warehouse_id · action_time<br>
+        <strong>Dùng khi:</strong> monitor đơn đang stuck, tìm đơn đang ở kho nào, báo cáo realtime (không dùng cho phân tích lịch sử)</div>
+      </div>
+
+    </div>
+
+    <!-- Status value list -->
+    <div class="sub" style="margin-top:20px">
+      <div class="sub-title">Bảng status đơn hàng (cột <code>status</code>)</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Status</th><th>Tỷ lệ (~14 ngày)</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code>delivered</code></td><td><span class="badge b-green">78%</span></td><td>Giao thành công — terminal state tốt</td></tr>
+            <tr><td><code>transporting</code></td><td>5.7%</td><td>Đang vận chuyển giữa các kho</td></tr>
+            <tr><td><code>delivering</code></td><td>4.7%</td><td>Shipper đang đi giao — in-flight</td></tr>
+            <tr><td><code>cancel</code></td><td>3.8%</td><td>Đã hủy (shop, platform, hoặc system)</td></tr>
+            <tr><td><code>returned</code></td><td>2.9%</td><td>Hoàn xong về shop — terminal state</td></tr>
+            <tr><td><code>storing</code></td><td>2.8%</td><td>Đang lưu tại kho, chờ xử lý</td></tr>
+            <tr><td><code>picking</code></td><td>0.9%</td><td>Shipper đang đi lấy</td></tr>
+            <tr><td><code>ready_to_pick</code></td><td>0.8%</td><td>Sẵn sàng để lấy — chờ shipper</td></tr>
+            <tr><td><code>return / delivery_fail / waiting_to_return</code></td><td>&lt;1% mỗi loại</td><td>Đang trong quy trình hoàn / giao thất bại / chờ hoàn</td></tr>
+            <tr><td><code>lost</code></td><td>rất hiếm</td><td>Mất hàng — có <code>lost_time</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:var(--text-mute);margin-top:6px">Tất cả status là <strong>chữ thường</strong> trong Trino. Filter: <code>WHERE status IN ('delivered', 'return', 'cancel')</code></p>
+    </div>
+
+  </div>
+
+  <!-- Group 2: sorting_core -->
+  <div class="ds-group" id="ds-warehouse">
+    <div class="ds-group-title">🗂 sorting_core — Bảng tự tạo phục vụ nhiều mục đích khác nhau</div>
+    <div class="callout warn" style="margin-bottom:16px">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>sorting_core là custom schema do user tự build</strong> — không phải bảng gốc của hệ thống GHN, không qua pipeline chuẩn hóa. Mỗi bảng phục vụ một mục đích riêng: KPI kho, leadtime qua kho, theo dõi shipper, GTC/LTC, tồn kho, lương tài xế... Với số liệu quan trọng, nên verify lại với bảng <code>iceberg.clean</code> trước khi report chính thức. Nếu có mâu thuẫn → tin schema <code>clean / dwh</code>.</div>
+    </div>
+    <div class="ds-cards">
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.ktc_north</div>
+        <div class="ds-card-desc">Sản lượng nhập/xuất KTC miền Bắc theo action, ca làm việc, loại hàng, tỉnh. Bảng chính cho throughput hàng ngày.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 row = 1 action tại kho</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột quan trọng:</strong> warehouse_id · action · ngay_theo_ca · route_code · loai_hang · weight · user_id (để check AutoSort)</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.qua_kho</div>
+        <div class="ds-card-desc">Toàn hành trình 1 đơn qua kho: 4 mốc thời gian + 4 leadtime tính sẵn. Bảng tổng hợp nhất cho phân tích leadtime.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">—</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 order × 1 kho</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột quan trọng:</strong> order_code · warehouse_id · receive_time · unpack_time · pack_time · export_time · leadtime_receive_unpack_min · leadtime_unpack_pack_min · leadtime_pack_export_min · leadtime_receive_export_min</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.cho_ra</div>
+        <div class="ds-card-desc">Hàng chờ rã kiện — leadtime từ lúc xe nhập kho đến lúc rã xong.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">ngay_ra</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> order_code · warehouse_id · receive_time · unpack_time · leadtime_rakien (phút)</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.cho_dong</div>
+        <div class="ds-card-desc">Hàng chờ đóng kiện — leadtime từ rã kiện đến đóng xong.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">ngay_pack</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> order_code · warehouse_id · unpack_time · pack_time · leadtime (phút)</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.cho_xuat_new</div>
+        <div class="ds-card-desc">Hàng chờ xuất kho — thời gian từ nhập kho đến lúc xe xuất.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">ngay_xuat</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> order_code · warehouse_id · receive_time · export_time · tong_time_diff_hour (giờ)</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.inventory_north</div>
+        <div class="ds-card-desc">Tồn kho tổng hợp miền Bắc theo khung giờ và kho. Dùng cho báo cáo tồn cuối ngày.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">report_date</span></div>
+        </div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.receive_export_north</div>
+        <div class="ds-card-desc">Nhập / xuất kho theo ca làm việc. Dùng để so sánh nhập-xuất trong ca.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">—</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> warehouse_id · ca · ngay_theo_ca · so_luong_nhap · so_luong_xuat · loai_hang</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.dsh_gtc_ltc_ttc</div>
+        <div class="ds-card-desc">KPI GTC / LTC / TTC tổng hợp theo bưu cục, client, tên shop. Bảng output sẵn — không cần tự tính từ raw.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">loaddate</span></div>
+        </div>
+        <div class="ds-cols"><strong>Dùng khi:</strong> cần số GTC/LTC/TTC nhanh theo ngày hoặc theo bưu cục</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.dsh_bck</div>
+        <div class="ds-card-desc">Backlog theo bưu cục và aging bucket. Phân loại: giao / trả / lấy / LC.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">report_date</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> warehouse_id · backlog_type · aging_bucket · so_don</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group 3: Vận tải -->
+  <div class="ds-group" id="ds-transport">
+    <div class="ds-group-title">🚚 Vận tải</div>
+    <div class="ds-cards">
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.truck_north</div>
+        <div class="ds-card-desc">Chuyến xe miền Bắc: thông tin trip, biển số, tuyến, trọng tải, lane type.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">Không rõ — cẩn thận full scan</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột quan trọng:</strong> trip_code · BKS (biển số) · ngay_theo_ca (VARCHAR!) · lane_type · so_luong · trong_tai · stoppoint_name</div>
+        <div class="ds-gotcha"><span>🚨</span><span>Không có partition rõ ràng — query không filter sẽ full scan toàn bảng, rất chậm. <code>ngay_theo_ca</code> là VARCHAR — dùng <code>SUBSTR(ngay_theo_ca,1,7)</code> để lấy tháng.</span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.clean.parsed_transportation_history</div>
+        <div class="ds-card-desc">Từng điểm dừng (stop) của các chuyến xe liên kho — hành trình xe qua các kho theo thứ tự. Bảng phức tạp với nhiều ARRAY và STRUCT lồng nhau.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt (DATE — khác shippingorder!)</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 row = 1 stop × 1 trip (trip_code + sort_number)</span></div>
+        </div>
+        <div class="ds-cols" style="line-height:1.9">
+          <strong>Chuyến:</strong> trip_code (format E_...) · hub (LHAN=HN, LHCM=HCM, DAD=MT) · trip_status (finished/cancel/ontrip) · scheduler_code/name (NULL=chuyến phát sinh)<br>
+          <strong>Stop:</strong> sort_number (thứ tự) · stoppoint_name · warehouse_id · type_node (sorting/delivery/pickup/delivery_and_pickup)<br>
+          <strong>Thời gian:</strong> check_in_at · check_out_at · est_time_in_at · est_time_out_at · est_day (0=same day ~88%, 1=hôm sau)<br>
+          <strong>STRUCT:</strong> truck (id, id_number=BKS, cubic, capacity_weight) · driver (id, fullname, phone)<br>
+          <strong>ARRAY(VARCHAR):</strong> items_picked · items_dropped · remain_items (package codes) · forward_stops (warehouse_id dạng string)<br>
+          <strong>disable:</strong> kiểu STRING không phải BOOLEAN — filter active: <code>WHERE disable IS NULL</code>
+        </div>
+        <div class="ds-gotcha"><span>🚨</span><span><code>dt</code> là <strong>DATE</strong> (không phải VARCHAR). Filter đúng: <code>WHERE dt &gt;= date_add('day',-7,current_date)</code> — KHÔNG dùng date_format()</span></div>
+        <div class="ds-note"><span>⚠️</span><span><code>type_node = 'sorting'</code> = stop tại KTC/sorter — xe vẫn có drop/pick hàng (~40–60% rows). <code>partner_id</code> top-level luôn = 0, không dùng.</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group 4: Last Mile -->
+  <div class="ds-group" id="ds-lastmile">
+    <div class="ds-group-title">🛵 Last Mile</div>
+    <div class="ds-cards">
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.theo_doi_shipper</div>
+        <div class="ds-card-desc">Theo dõi shipper: đơn lấy/giao, kho phụ trách, performance theo ngày.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">dt</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> employee_id · pick_warehouse_id · deliver_warehouse_id · so_don_lay · so_don_giao · dt</div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.bcnhankienlong</div>
+        <div class="ds-card-desc">Nhập / xuất kiện tại bưu cục theo miền lấy/giao. Dùng để phân tích flow hàng vào-ra BC.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Partition</span><span class="chip-val">—</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group 5: Dimension -->
+  <div class="ds-group" id="ds-dim">
+    <div class="ds-group-title">📚 Dimension Tables</div>
+    <div class="ds-cards">
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.dwh.dim_warehouse</div>
+        <div class="ds-card-desc">Master data kho — tên, loại, tỉnh, vùng. Join key cho hầu hết mọi query.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Join key</span><span class="chip-val">warehouse_id (BIGINT)</span></div>
+          <div class="ds-meta-chip"><span class="chip-label">Tổng kho</span><span class="chip-val">4,405 kho</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột quan trọng:</strong> warehouse_id · warehouse_name · warehouse_type · province_name · region_shortname · is_virtual ('true'/'false' dạng VARCHAR!)</div>
+        <div class="ds-gotcha"><span>🚨</span><span><code>WHERE warehouse_type='KTC'</code> trả về cả KCT. Lọc KTC thực sự: <code>LOWER(warehouse_name) LIKE 'kho trung chuyển%'</code></span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.dwh.dim_client</div>
+        <div class="ds-card-desc">Master data khách hàng (shop/merchant). JOIN để phân loại SME / SHOPEE / TTS và lấy tên shop.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Join key</span><span class="chip-val">client_id (BIGINT)</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> client_id · client_name (tên shop) · client_type (HCM Big Clients, B2B SME, B2B KA, SHOPEE, TTS...)</div>
+        <div class="ds-gotcha"><span>🚨</span><span><code>client_type</code> NULL ≈ 99% — KHÔNG dùng = 'SME' trực tiếp. Luôn dùng CASE: <code>WHEN lower(client_type) LIKE '%tts%' THEN 'TTS' WHEN lower(client_type) LIKE '%shopee%' THEN 'SHOPEE' ELSE 'SME'</code></span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.dwh.dim_employee</div>
+        <div class="ds-card-desc">Master data nhân viên — shipper, nhân viên kho, tài xế.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Join key</span><span class="chip-val">employee_id</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> employee_id · employee_name · jobtitle_name</div>
+        <div class="ds-note"><span>⚠️</span><span>Loại trừ employee_id = <code>8888</code> khi tính KPI nhân viên — đây là tài khoản Auto/system.</span></div>
+      </div>
+
+      <div class="ds-card">
+        <div class="ds-card-name">iceberg.sorting_core.area_warehouse</div>
+        <div class="ds-card-desc">Mapping tỉnh/thành → vùng giao nhận. Dùng để phân loại Nội tỉnh / Nội vùng / Liên vùng.</div>
+        <div class="ds-card-meta">
+          <div class="ds-meta-chip"><span class="chip-label">Grain</span><span class="chip-val">1 tỉnh = 1 row</span></div>
+        </div>
+        <div class="ds-cols"><strong>Cột:</strong> province_id · province_name · area_code · area_name</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /tab-dataset -->
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 5 — QUERY STANDARDS
+═══════════════════════════════════════════════════════ -->
+<div id="tab-query" class="tab-panel">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">⌨</span>
+    <div><div class="sec-title">Query Standards — Trino</div><div class="sec-sub">Rules bắt buộc · Lỗi phổ biến · Pattern chuẩn</div></div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Rules không được vi phạm</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Rule</th><th>✅ Đúng</th><th>❌ Sai — và tại sao</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Full path</strong></td><td><code>iceberg.sorting_core.ktc_north</code></td><td><code>sorting_core.ktc_north</code> — Superset báo lỗi "schema not found"</td></tr>
+          <tr><td><strong>Database có dấu gạch</strong></td><td><code>"dw-ghn".schema.table</code></td><td><code>dw-ghn.schema.table</code> — parse error</td></tr>
+          <tr><td><strong>JOIN syntax</strong></td><td><code>JOIN b ON a.col = b.col</code></td><td><code>JOIN b USING (col)</code> — merge column, gây lỗi GROUP BY/ORDER BY</td></tr>
+          <tr><td><strong>Count điều kiện</strong></td><td><code>COUNT(CASE WHEN cond THEN 1 END)</code></td><td><code>COUNTIF(cond)</code> — BigQuery only, Trino không có</td></tr>
+          <tr><td><strong>Tỷ lệ an toàn</strong></td><td><code>ROUND(x*100.0/NULLIF(y,0),2)</code></td><td><code>x/y*100</code> — lỗi chia 0 khi y=0</td></tr>
+          <tr><td><strong>Status lowercase</strong></td><td><code>'delivered'</code></td><td><code>'Delivered'</code> — không match, kết quả sai im lặng</td></tr>
+          <tr><td><strong>CAST trong ON</strong></td><td>Cast trước ở CTE hoặc subquery</td><td><code>JOIN b ON CAST(a.id AS VARCHAR)=b.id</code> — bypass partition pruning</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Filter partition dt — Phải kiểm tra type trước</div>
+    <div class="callout error">
+      <span class="callout-icon">🚨</span>
+      <div>Mỗi bảng có <code class="inline">dt</code> khác type. Dùng sai → query lỗi hoặc không prune partition, full scan cả table.</div>
+    </div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Filter dt đúng cách</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="cmt">-- dt là VARCHAR (shippingorder_*, ktc_north...)</span>
+<span class="kw">WHERE</span> dt >= <span class="fn">date_format</span>(<span class="fn">date_add</span>(<span class="str">'day'</span>, -7, <span class="fn">current_date</span>), <span class="str">'%Y-%m-%d'</span>)
+  <span class="kw">AND</span> dt &lt;  <span class="fn">date_format</span>(<span class="fn">current_date</span>, <span class="str">'%Y-%m-%d'</span>)
+
+<span class="cmt">-- dt là DATE (parsed_transportation_history)</span>
+<span class="kw">WHERE</span> dt >= <span class="fn">date_add</span>(<span class="str">'day'</span>, -7, <span class="fn">current_date</span>)
+
+<span class="cmt">-- Bảng đã biết</span>
+<span class="cmt">-- VARCHAR: shippingorder_*, ktc_north, sorting_core.*</span>
+<span class="cmt">-- DATE:    parsed_transportation_history</span></pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Timezone — Hỏi platform trước khi áp +7h</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Platform</th><th>Timezone behavior</th><th>Cần làm gì</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Superset</strong></td><td>Tự convert UTC → ICT (+7)</td><td>Không cần thêm +7 trong query</td></tr>
+          <tr><td><strong>Metabase</strong></td><td>Không tự convert</td><td>Thêm <code>+ INTERVAL '7' HOUR</code> vào timestamp columns</td></tr>
+          <tr><td><strong>Trino CLI / raw</strong></td><td>Giữ nguyên UTC</td><td>Cộng +7h thủ công nếu cần hiển thị giờ Việt Nam</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">ARRAY & STRUCT — Nguy hiểm nhất với người mới</div>
+    <div class="callout error">
+      <span class="callout-icon">🚨</span>
+      <div>Không bao giờ đoán field name của ARRAY(ROW) hay STRUCT. Chạy <code class="inline">SELECT typeof(col) FROM table LIMIT 1</code> trước. Sai field name → lỗi compile, không phải runtime — khó debug.</div>
+    </div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — UNNEST đúng cách (3 bước)</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="cmt">-- Bước 1: lấy type signature</span>
+<span class="kw">SELECT</span> <span class="fn">typeof</span>(items) <span class="kw">FROM</span> table <span class="kw">LIMIT</span> 1;
+<span class="cmt">-- → row(code varchar, name varchar, weight double, status varchar)</span>
+
+<span class="cmt">-- Bước 2: UNNEST với đúng số alias = đúng số fields</span>
+<span class="cmt">-- Prefix tất cả alias để tránh trùng cột bảng ngoài</span>
+<span class="kw">SELECT</span> o.order_code, item_code, item_weight
+<span class="kw">FROM</span> orders o
+<span class="kw">CROSS JOIN UNNEST</span>(o.items) <span class="kw">AS</span> t(item_code, item_name, item_weight, item_status)
+<span class="kw">WHERE</span> <span class="fn">CARDINALITY</span>(o.items) > 0
+
+<span class="cmt">-- LƯU Ý: shippingorder có cột weight, status, action ở bảng ngoài</span>
+<span class="cmt">-- → KHÔNG được dùng alias trùng tên: weight, status, action</span></pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Window Functions — Pattern hay dùng</div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Window function patterns</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="cmt">-- Tìm action tiếp theo trong chuỗi (unpack → pack)</span>
+<span class="fn">LEAD</span>(action_time) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> order_code, warehouse_id
+    <span class="kw">ORDER BY</span> action_time
+) <span class="kw">AS</span> next_action_time
+
+<span class="cmt">-- Rank đơn theo thời gian chờ</span>
+<span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> warehouse_id
+    <span class="kw">ORDER BY</span> leadtime_rakien <span class="kw">DESC</span>
+) <span class="kw">AS</span> rank_slowest
+
+<span class="cmt">-- Running total sản lượng trong ngày</span>
+<span class="fn">SUM</span>(so_luong) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> warehouse_id, ngay_theo_ca
+    <span class="kw">ORDER BY</span> gio
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</span>
+) <span class="kw">AS</span> cumulative_vol</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">UNION bảng phân vùng theo tháng</div>
+    <p>Nhiều bảng trong sorting_core được split theo tháng: <code class="inline">table_202501</code>, <code class="inline">table_202502</code>... Dùng UNION ALL để query nhiều tháng.</p>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — UNION bảng phân vùng tháng</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> iceberg.sorting_core.table_202503
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> iceberg.sorting_core.table_202504
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> iceberg.sorting_core.table_202505
+
+<span class="cmt">-- Wrap trong CTE để tiện dùng</span>
+<span class="kw">WITH</span> combined <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> * <span class="kw">FROM</span> iceberg.sorting_core.table_202503
+    <span class="kw">UNION ALL</span> <span class="kw">SELECT</span> * <span class="kw">FROM</span> iceberg.sorting_core.table_202504
+)
+<span class="kw">SELECT</span> ... <span class="kw">FROM</span> combined <span class="kw">WHERE</span> ...</pre>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Naming & Style</div>
+    <ul>
+      <li>Column alias: <strong>chữ thường, không dấu, gạch dưới</strong> → <code class="inline">loai_hang</code>, không phải <code class="inline">Loại Hàng</code></li>
+      <li>Chỉ viết đúng những gì được yêu cầu — không thêm logic thừa, không over-engineer</li>
+      <li>Không rõ khoảng thời gian → hỏi lại trước khi viết, không tự giả định</li>
+      <li>Không rõ business meaning cột → hỏi Ops, không tự suy luận</li>
+    </ul>
+  </div>
+
+</div><!-- /tab-query -->
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 6 — CÔNG CỤ & LINKS
+═══════════════════════════════════════════════════════ -->
+<div id="tab-dashboards" class="tab-panel">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">📊</span>
+    <div><div class="sec-title">Công cụ & Tài nguyên</div><div class="sec-sub">Toàn bộ link công cụ, portal, guideline — bookmark hết ngay ngày đầu</div></div>
+  </div>
+
+  <!-- BI & Query Tools -->
+  <div class="sub">
+    <div class="sub-title">BI & Query Tools</div>
+    <div class="dash-grid">
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase — BI chính</div>
+        <div class="dash-title">data-bi.ghn.vn</div>
+        <div class="dash-desc">Dashboard tracking hàng ngày: throughput kho, leadtime, tải xe, GTC/LTC. Đây là tool chính để build và xem dashboard của team.</div>
+        <div style="font-size:11px;color:var(--text-mute);margin-top:4px">⚠️ Không tự convert timezone — cần <code class="inline">+ INTERVAL '7' HOUR</code> trong query nếu hiển thị giờ</div>
+        <a href="https://data-bi.ghn.vn/" target="_blank" class="dash-link">🔗 Mở Metabase</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform superset">Superset SQL Lab — Query ad-hoc</div>
+        <div class="dash-title">data-query.ghn.vn/sqllab</div>
+        <div class="dash-desc">Viết và chạy query Trino trực tiếp. Dùng cho explore data, verify số liệu, ad-hoc request. Superset tự convert UTC → +7h nên không cần cộng thêm.</div>
+        <div style="font-size:11px;color:var(--text-mute);margin-top:4px">✅ Tự convert UTC → ICT — không cần thêm +7h trong query</div>
+        <a href="https://data-query.ghn.vn/sqllab/" target="_blank" class="dash-link">🔗 Mở Superset SQL Lab</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:var(--blue-text)">Looker Studio — Báo cáo chia sẻ</div>
+        <div class="dash-title">Google Looker Studio</div>
+        <div class="dash-desc">Báo cáo dạng slide/report để chia sẻ với stakeholder ngoài team. Dễ embed biểu đồ, xuất PDF. Đã có report mẫu.</div>
+        <a href="https://lookerstudio.google.com/u/0/reporting/3fdec3ab-aa96-46d8-8a00-02ab9754e2e4/page/x1WWF/edit" target="_blank" class="dash-link">🔗 Mở Looker Report</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:#f87171">Grafana — Monitoring hệ thống</div>
+        <div class="dash-title">grafana.ghn.vn</div>
+        <div class="dash-desc">Monitor hạ tầng, pipeline data, latency hệ thống. Dùng để theo dõi khi có anomaly về data freshness hoặc khi pipeline chậm.</div>
+        <a href="https://grafana.ghn.vn/?orgId=1" target="_blank" class="dash-link">🔗 Mở Grafana</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:var(--purple-text)">AI Portal — Data Job</div>
+        <div class="dash-title">risk-portal.ghn.vn/data_job</div>
+        <div class="dash-desc">Submit data job: chạy query nặng, schedule pipeline, xử lý batch. Dùng khi query quá lớn để chạy trực tiếp trên Superset hoặc cần schedule tự động.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <a href="https://risk-portal.ghn.vn/data_job/submit" target="_blank" class="dash-link">🔗 Submit Data Job</a>
+          <a href="https://docs.google.com/document/d/1gUL9wixw23Vb9GGdybyoMHhah6gSnony25yhTB50ntk/edit?tab=t.0#heading=h.7ul3ilos7ocw" target="_blank" class="dash-link" style="background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple-brd)">📄 Data Job Guideline</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GHN Internal Portals -->
+  <div class="sub">
+    <div class="sub-title">GHN Internal Portals</div>
+    <div class="dash-grid">
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:var(--orange)">Nội bộ GHN</div>
+        <div class="dash-title">noibo.ghn.vn</div>
+        <div class="dash-desc">Portal nội bộ: HR, tài liệu công ty, quy trình, thông báo nội bộ.</div>
+        <a href="https://noibo.ghn.vn/" target="_blank" class="dash-link">🔗 Mở Nội bộ</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:var(--teal-text)">KTC Vận tải</div>
+        <div class="dash-title">nhanh.ghn.vn/ktc-van-tai</div>
+        <div class="dash-desc">Công cụ vận hành KTC & vận tải: xem chuyến xe, trạng thái kiện hàng, quản lý kho theo thời gian thực.</div>
+        <a href="https://nhanh.ghn.vn/ktc-van-tai" target="_blank" class="dash-link">🔗 Mở KTC Vận tải</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:var(--green-text)">Data Portal</div>
+        <div class="dash-title">data-portal.ghn.vn</div>
+        <div class="dash-desc">Portal data nội bộ: catalog, data lineage, data governance, quản lý truy cập.</div>
+        <a href="https://data-portal.ghn.vn/" target="_blank" class="dash-link">🔗 Mở Data Portal</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Guidelines -->
+  <div class="sub">
+    <div class="sub-title">Tài liệu hướng dẫn</div>
+    <div class="dash-grid">
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Guideline</div>
+        <div class="dash-title">Metabase Guideline</div>
+        <div class="dash-desc">Hướng dẫn sử dụng Metabase của GHN: cách tạo question, build dashboard, viết Native Query Trino, share dashboard.</div>
+        <a href="https://docs.google.com/document/d/1y3RHsM6lcUyJgMpeXjeUaczUSwcpUu2uBGYXJjgUfx0/edit?tab=t.0" target="_blank" class="dash-link">🔗 Đọc Guideline</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform" style="color:var(--purple-text)">Guideline</div>
+        <div class="dash-title">Data Job Guideline</div>
+        <div class="dash-desc">Hướng dẫn submit và quản lý data job trên AI Portal: cách viết config, schedule, handle lỗi.</div>
+        <a href="#" class="dash-link tbd">🔗 Link — Cần cập nhật</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Dashboard cụm HN -->
+  <div class="sub">
+    <div class="sub-title">Dashboard Metabase — Cụm kho Hà Nội</div>
+    <div class="dash-grid">
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · Vận hành kho</div>
+        <div class="dash-title">Xuất nhập tồn</div>
+        <div class="dash-desc">Theo dõi sản lượng nhập / xuất / tồn kho theo ngày, ca làm việc, loại hàng. Dashboard dùng hàng ngày để check throughput.</div>
+        <a href="https://data-bi.ghn.vn/collection/294-xu-t-nh-p-t-n" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · Năng suất</div>
+        <div class="dash-title">Năng suất Sorting — HN03</div>
+        <div class="dash-desc">Năng suất sort theo kho, nhân viên, ca. Bao gồm AutoSorting vs Manual, hiệu suất băng chuyền.</div>
+        <a href="https://data-bi.ghn.vn/collection/354-n-ng-su-t-sorting" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · Tồn kho</div>
+        <div class="dash-title">Đơn tồn chi tiết</div>
+        <div class="dash-desc">Chi tiết từng đơn đang tồn trong kho: aging, loại hàng, trạng thái. Dùng để phân tích hàng tồn lâu, báo cáo Ops.</div>
+        <a href="https://data-bi.ghn.vn/collection/378-n-t-n-chi-ti-t" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · Realtime</div>
+        <div class="dash-title">Báo cáo Realtime</div>
+        <div class="dash-desc">Số liệu cận thực theo giờ: nhập xuất, tồn, trạng thái xử lý. Dùng trong ca để theo dõi vận hành live.</div>
+        <a href="https://data-bi.ghn.vn/collection/389-bao-cao-real-time" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · Toàn quốc</div>
+        <div class="dash-title">63x63 Toàn quốc</div>
+        <div class="dash-desc">Báo cáo dịch vụ 63x63 (giao nội địa toàn quốc). Theo dõi volume, tuyến, SLA của service này trên toàn hệ thống.</div>
+        <a href="https://data-bi.ghn.vn/collection/529-toan-qu-c" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · HN02 & DX</div>
+        <div class="dash-title">Báo cáo KTC — HN02 & Dương Xá</div>
+        <div class="dash-desc">Báo cáo tổng hợp cho KTC Hà Nội 02 và KTC Dương Xá: sản lượng, sort/forward, ca làm việc.</div>
+        <a href="https://data-bi.ghn.vn/collection/168-ktc" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-platform metabase">Metabase · Leadtime</div>
+        <div class="dash-title">Leadtime KTC & KCT</div>
+        <div class="dash-desc">Leadtime 4 giai đoạn qua kho (rã → đóng → xuất) cho toàn bộ KTC và KCT. Phân tích bottleneck theo kho và loại hàng.</div>
+        <a href="https://data-bi.ghn.vn/collection/384-leadtime-ktc-kct" target="_blank" class="dash-link">🔗 Mở Dashboard</a>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /tab-dashboards -->
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 7 — ĐẦU MỐI
+═══════════════════════════════════════════════════════ -->
+<div id="tab-contacts" class="tab-panel">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">📞</span>
+    <div><div class="sec-title">Đầu mối làm việc</div><div class="sec-sub">Ai → liên hệ khi nào</div></div>
+  </div>
+
+  <!-- GTalk notice -->
+  <div class="callout info" style="margin-bottom:20px">
+    <span class="callout-icon">💬</span>
+    <div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px">Kênh liên lạc nội bộ: GTalk (ưu tiên)</div>
+      <div style="font-size:12px;line-height:1.8">
+        Công ty đang chuyển từ Telegram → <strong>GTalk</strong> làm kênh chính thức.
+        Tải app hoặc dùng web: <a href="https://gtalk.ghn.vn" target="_blank" style="color:#93c5fd;text-decoration:underline">gtalk.ghn.vn</a><br>
+        <strong>Đăng nhập:</strong> Mã nhân viên &nbsp;+&nbsp; Mật khẩu GHN App &nbsp;+&nbsp; Mã Google Authenticator (6 số)<br>
+        Các handle <span class="badge b-blue" style="font-size:10px;vertical-align:middle">GTalk @...</span> bên dưới là tên tài khoản GTalk — nhắn trực tiếp trên app.
+      </div>
+    </div>
+  </div>
+
+  <!-- Group: Data / BI -->
+  <div class="sub">
+    <div class="sub-title">Data · BI · Engineering</div>
+    <div class="contact-grid">
+
+      <div class="contact-card">
+        <div class="contact-role">📊 Senior BI — Đầu mối chính về data</div>
+        <div class="contact-name">Anh Nam</div>
+        <div class="contact-team">Senior BI</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-blue">Telegram @NamTran072</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: xin thông tin bảng, request dữ liệu mới, hỏi logic query, muốn hiểu sâu hơn về cách xử lý dữ liệu của hệ thống</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role">🔑 BI Specialist — Duyệt quyền truy cập</div>
+        <div class="contact-name">Anh/Chị Minhngoc</div>
+        <div class="contact-team">BI Specialist</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-blue">Telegram @Minhngoc3132300</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: xin quyền truy cập schema/bảng trên Trino, xin quyền Metabase, cần approve access request</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role">🔧 OE — Logic query & bảng chất lượng cao</div>
+        <div class="contact-name">Anh Huy</div>
+        <div class="contact-team">Phòng OE (Operations Engineering)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-blue">Telegram @huypt269</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: hỏi logic query phức tạp, muốn tìm hiểu các bảng bên OE tạo (rất chất lượng và chính xác), tham khảo cách xử lý data</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role">📡 Data KTC HY01</div>
+        <div class="contact-name">Long & Chang</div>
+        <div class="contact-team">Data team KTC Hưng Yên 01</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-blue">Telegram @Longnguyen1610</span>
+          <span class="badge b-blue">Telegram @chanc1122</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: cần thông tin liên quan đến KTC HY01, hỏi về flow hàng giữa HN02 và HY01 (đặc biệt prefix C)</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role">🌐 DA Network</div>
+        <div class="contact-name">Anh Thang</div>
+        <div class="contact-team">DA bên Network</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-blue">Telegram @thangk0406</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: hỏi về tuyến vận tải, mapping hub-tỉnh, thay đổi network routing ảnh hưởng đến phân tích</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group: Ops -->
+  <div class="sub">
+    <div class="sub-title">Operations — Vận hành kho & ngoại lệ</div>
+    <div class="contact-grid">
+
+      <div class="contact-card">
+        <div class="contact-role">🏭 Giám đốc cụm kho Hà Nội</div>
+        <div class="contact-name">Anh Nam</div>
+        <div class="contact-team">Quản lý cụm HN02 · DX · HN03</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-orange">SĐT +84 931 994 192</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: escalate vấn đề vận hành cụm HN, số liệu bất thường cần xác nhận từ cấp quản lý, báo cáo định kỳ lên ban lãnh đạo</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role">📦 Quản lý kho Dương Xá</div>
+        <div class="contact-name">Anh Minh</div>
+        <div class="contact-team">Quản lý kho KTC Dương Xá</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-teal">Telegram @MinhN9V7</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: xác nhận business logic vận hành Dương Xá, số liệu throughput CK bất thường, hỏi về quy trình sort hàng cồng kềnh</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role">⚠️ Xử lý ngoại lệ</div>
+        <div class="contact-name">Chị Linh</div>
+        <div class="contact-team">Xử lý ngoại lệ vận hành</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-teal">Telegram @namhuong</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: phân tích đơn hàng ngoại lệ (stuck, bất thường không rõ nguyên nhân), cần thông tin về quy trình xử lý exception</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group: IT -->
+  <div class="sub">
+    <div class="sub-title">IT & Hạ tầng</div>
+    <div class="contact-grid">
+
+      <div class="contact-card">
+        <div class="contact-role">💻 IT — Cơ sở hạ tầng dữ liệu</div>
+        <div class="contact-name">Anh Thanh</div>
+        <div class="contact-team">Trưởng phòng Phát triển Phần mềm</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge b-mute">GTalk: 3087116</span>
+        </div>
+        <div class="contact-when">Liên hệ khi: vấn đề hạ tầng data (server, pipeline down), xin setup tài khoản hệ thống, VPN, laptop issues</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /tab-contacts -->
+
+<!-- TAB 8 — CHECKLIST — ĐÃ XÓA -->
+<div id="tab-checklist" class="tab-panel" style="display:none!important">
+
+  <div class="sec-hdr">
+    <span class="sec-icon">✅</span>
+    <div><div class="sec-title">Checklist tuần đầu</div><div class="sec-sub">Tự lưu trình duyệt — đóng trang vẫn nhớ</div></div>
+  </div>
+
+  <div class="ck-progress">
+    <div class="ck-pct" id="ck-pct">0%</div>
+    <div class="ck-bar-wrap">
+      <div class="ck-bar-label" id="ck-label">0 / 0 hoàn thành</div>
+      <div class="ck-bar"><div class="ck-fill" id="ck-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="ck-day">Ngày 1 — Setup & Truy cập</div>
+      <ul class="ck-list">
+        <li><input type="checkbox" id="c1"><span>Kết nối VPN thành công, ping được server nội bộ</span></li>
+        <li><input type="checkbox" id="c2"><span>Đăng nhập Trino và chạy được <code class="inline">SELECT 1</code> không lỗi</span></li>
+        <li><input type="checkbox" id="c3"><span>Vào <strong>Superset SQL Lab</strong> (<a href="https://data-query.ghn.vn/sqllab/" target="_blank" style="color:var(--orange)">data-query.ghn.vn/sqllab</a>) và chạy được 1 query Trino</span></li>
+        <li><input type="checkbox" id="c4"><span>Đăng nhập <strong>Metabase</strong> (<a href="https://data-bi.ghn.vn/" target="_blank" style="color:var(--orange)">data-bi.ghn.vn</a>), xem được 1 dashboard của team</span></li>
+        <li><input type="checkbox" id="c5"><span>Vào được <strong>Data Portal</strong> (<a href="https://data-portal.ghn.vn/" target="_blank" style="color:var(--orange)">data-portal.ghn.vn</a>) và <strong>KTC Vận tải</strong> (<a href="https://nhanh.ghn.vn/ktc-van-tai" target="_blank" style="color:var(--orange)">nhanh.ghn.vn/ktc-van-tai</a>)</span></li>
+        <li><input type="checkbox" id="c6-1"><span>Join GTalk, vào channel team Operations, biết cách gửi tin nhắn</span></li>
+        <li><input type="checkbox" id="c6"><span>Xin quyền đọc 3 schema: <code class="inline">iceberg.sorting_core</code>, <code class="inline">iceberg.clean</code>, <code class="inline">iceberg.dwh</code></span></li>
+        <li><input type="checkbox" id="c7"><span>Đọc qua <strong>Metabase Guideline</strong> — nắm cách tạo question và Native Query</span></li>
+      </ul>
+
+      <div class="ck-day">Ngày 1–2 — Nắm nghiệp vụ</div>
+      <ul class="ck-list">
+        <li><input type="checkbox" id="c8"><span>Giải thích được sự khác nhau giữa BC, KCT, KTC — vai trò từng loại trong luồng đơn hàng</span></li>
+        <li><input type="checkbox" id="c9"><span>Vẽ được (hoặc mô tả) hành trình 1 đơn hàng từ lúc shop tạo đến lúc khách nhận</span></li>
+        <li><input type="checkbox" id="c10"><span>Phân biệt được khi nào đơn tính là GTC, khi nào là TTC (không phải threshold — là điều kiện phân biệt)</span></li>
+        <li><input type="checkbox" id="c11"><span>Biết 3 loại hàng (Normal/Bulky/Freight) và cách viết điều kiện SQL để phân loại</span></li>
+        <li><input type="checkbox" id="c12"><span>Hiểu "hàng sort" và "hàng forward" tại KTC là gì — và tại sao phải phân biệt</span></li>
+      </ul>
+
+      <div class="ck-day">Ngày 2–3 — Cụm kho HN</div>
+      <ul class="ck-list">
+        <li><input type="checkbox" id="c13"><span>Biết 3 KTC mình quản lý: HN02 (1121), Dương Xá (21513000), HN03 (22487000)</span></li>
+        <li><input type="checkbox" id="c14"><span>Hiểu HN02 sort hàng NHỎ (prefix A), Dương Xá sort hàng CK — và tại sao prefix C tại HN02 là hàng forward</span></li>
+        <li><input type="checkbox" id="c15"><span>Viết được query lọc đúng KTC Hà Nội, không bị dính KCT trong kết quả</span></li>
+        <li><input type="checkbox" id="c16"><span>Hiểu tại sao không dùng DATE(action_time) thẳng cho ca đêm — và cách dùng ngay_theo_ca đúng</span></li>
+        <li><input type="checkbox" id="c17"><span>Biết 4 mốc leadtime hàng qua kho và bảng nào chứa từng giai đoạn</span></li>
+        <li><input type="checkbox" id="c18"><span>Hiểu BC Hà Nội và BC Bắc Ninh là scope của mình — tại sao Bắc Ninh quan trọng (khu công nghiệp)</span></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="ck-day">Ngày 3–4 — Kỹ năng query</div>
+      <ul class="ck-list">
+        <li><input type="checkbox" id="c19"><span>Tự query được sản lượng sort KTC HN02 hôm qua từ <code class="inline">sorting_core.ktc_north</code></span></li>
+        <li><input type="checkbox" id="c20"><span>Query được leadtime trung bình qua kho DX từ <code class="inline">sorting_core.qua_kho</code></span></li>
+        <li><input type="checkbox" id="c21"><span>Filter đúng bảng shippingorder với dt là VARCHAR — không bị lỗi partition</span></li>
+        <li><input type="checkbox" id="c22"><span>Biết tại sao không dùng <code class="inline">COUNTIF</code>, <code class="inline">JOIN USING</code> trong Trino</span></li>
+        <li><input type="checkbox" id="c23"><span>Biết platform đang dùng (Superset hay Metabase) và liệu có cần cộng +7h timezone không</span></li>
+        <li><input type="checkbox" id="c24"><span>Tra được schema của 1 bảng bất kỳ mà không cần hỏi ai (biết dùng Superset explore hoặc DESCRIBE TABLE)</span></li>
+      </ul>
+
+      <div class="ck-day">Ngày 4–5 — Con người & Quy trình</div>
+      <ul class="ck-list">
+        <li><input type="checkbox" id="c25"><span>Gặp và nói chuyện với đầu mối Ops kho HN — biết ai là người confirm số liệu khi bất thường</span></li>
+        <li><input type="checkbox" id="c26"><span>Biết OKR / ưu tiên của team tháng này là gì</span></li>
+        <li><input type="checkbox" id="c27"><span>Biết các dashboard đang dùng hàng ngày là gì, ở đâu — và ai đang theo dõi</span></li>
+        <li><input type="checkbox" id="c28"><span>Biết khi nhận 1 request, phải hỏi những thông tin gì trước khi bắt đầu viết query</span></li>
+        <li><input type="checkbox" id="c29"><span>Xem qua ít nhất 1 báo cáo đã hoàn chỉnh của team để hiểu standard output</span></li>
+        <li><input type="checkbox" id="c30"><span>Hoàn thành task nhỏ đầu tiên (do anh/chị giao) và share kết quả</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /tab-checklist -->
+
+</div><!-- /tab-container -->
+
+<script src="js/constants.js"></script>
+<script src="js/render.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/init.js"></script>
+</body>
+</html>
