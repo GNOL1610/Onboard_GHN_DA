@@ -50,18 +50,20 @@
       <div style="background:var(--surface);border:1px solid var(--orange-brd);border-radius:9px;padding:14px">
         <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:8px">🏭 KTC — Kho Trung Chuyển</div>
         <div style="font-size:12px;color:var(--text-sec);line-height:1.9">
-          Hub chính của mạng lưới. <strong>Có hệ thống Auto Sorting / Wheel Sorter</strong>.<br>
-          <strong>Quy trình:</strong> Nhận xe vào → Rã kiện → Đưa lên băng tải → Sort tự động theo BC đích → Đóng kiện → Xuất xe.<br>
-          <strong>Ví dụ HN02:</strong> 1 hệ thống auto sorting, <strong>288 đích đến</strong>.<br>
+          Hub chính của mạng lưới. <strong>HN02 &amp; HN03 có băng chuyền AutoSort/CBS; DX xử lý hàng CK/nặng thủ công.</strong><br>
+          <strong>Quy trình:</strong> Nhận hàng từ xe tải → Rã kiện → Phân loại theo điểm đến đích → Đóng kiện mới → Xuất lên xe tiếp theo.<br>
+          <strong>Hàng sort</strong> = rã kiện → phân loại → đóng kiện mới theo BC/KTC đích.<br>
+          <strong>Hàng forward (không sort tại đây)</strong> = nguyên kiện → xuất thẳng lên xe sang kho khác sort.<br>
           <span class="badge b-orange" style="margin-top:4px">73 KTC toàn quốc</span>
         </div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px">
         <div style="font-size:13px;font-weight:700;color:var(--text-sec);margin-bottom:8px">🔄 KCT — Kho Chuyển Tiếp</div>
         <div style="font-size:12px;color:var(--text-sec);line-height:1.9">
-          Hub phụ nội vùng. <strong>Không có sorter</strong> — không rã kiện, không sort lại.<br>
-          <strong>Quy trình:</strong> Nhận kiện nguyên từ nhiều BC địa phương → Gom lại → Đẩy thẳng lên KTC (hoặc KTC đích).<br>
-          Mục tiêu: giảm số chuyến xe mà KTC phải chạy đến từng BC lẻ.<br>
+          Điểm trung chuyển nội vùng. <strong>Không có sorter — không rã kiện, không sort lại.</strong><br>
+          <strong>Quy trình:</strong> Nhập nguyên kiện → Gom theo đích → Xuất nguyên kiện.<br>
+          <strong>Chức năng:</strong> nhận/giao BC địa phương; chuyển tiếp kiện nguyên lên KTC; gom nhiều BC thành ít chuyến xe để KTC không phải chạy đến từng BC lẻ.<br>
+          <strong>Điểm khác KTC:</strong> kiện không bị rã ra — KCT chỉ xử lý logistic, không xử lý nội dung kiện hàng.<br>
           <span class="badge b-mute" style="margin-top:4px">35 KCT toàn quốc</span>
         </div>
       </div>
@@ -69,7 +71,7 @@
         <div style="font-size:13px;font-weight:700;color:var(--blue-text);margin-bottom:8px">🏪 BC — Bưu cục</div>
         <div style="font-size:12px;color:var(--text-sec);line-height:1.9">
           Điểm last-mile. Tiếp xúc trực tiếp với shop (lấy hàng) và người nhận (giao hàng).<br>
-          <strong>Nhân viên:</strong> NVPTTT (pick-up) và NV Giao (delivery).<br>
+          <strong>Nhân viên:</strong> NVPTTT — cùng <strong>1 nhân viên</strong> đảm nhận cả lấy hàng (từ shop) và giao hàng (đến người nhận).<br>
           Trong data: <code class="inline">pick_warehouse_id</code> và <code class="inline">deliver_warehouse_id</code> luôn là BC.<br>
           <span class="badge b-blue" style="margin-top:4px">4,000+ BC toàn quốc</span>
         </div>
@@ -87,71 +89,6 @@
       <div class="flow-node">👤 Khách</div>
     </div>
 
-    <!-- Các mô hình vận hành thực tế -->
-    <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Các mô hình vận hành thực tế (song song với Hub and Spoke chuẩn)</div>
-    <div class="tbl-wrap" style="margin-bottom:12px">
-      <table>
-        <thead><tr><th>Mô hình</th><th>Flow</th><th>Khi nào áp dụng</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><span class="badge b-orange">Hub &amp; Spoke chuẩn</span></td>
-            <td>Shop → BC lấy → KTC → BC giao → Khách</td>
-            <td>Đa số đơn hàng thông thường</td>
-          </tr>
-          <tr>
-            <td><span class="badge b-blue">Gom thẳng vào KTC</span></td>
-            <td>Nhiều shop → Xe tải → KTC (bỏ qua BC lấy)</td>
-            <td>Shop lớn, sản lượng nhiều, xe tải vào được</td>
-          </tr>
-          <tr>
-            <td><span class="badge b-green">1 khách đi nhiều KTC</span></td>
-            <td>Shop lớn → KTC đầu → nhiều KTC đích</td>
-            <td>Key account, phân phối toàn quốc</td>
-          </tr>
-          <tr>
-            <td><span class="badge b-warn">Point-to-Point (hàng nặng)</span></td>
-            <td>Shop → Khách (trực tiếp, không qua kho)</td>
-            <td>Hàng nặng / B2B / siêu tốc — dùng Ahamove</td>
-          </tr>
-          <tr>
-            <td><span class="badge b-mute">BC ↔ BC</span></td>
-            <td>BC lấy → BC giao (không qua KTC)</td>
-            <td>Địa bàn đặc thù: đảo, vùng xa (VD: Phú Quốc)</td>
-          </tr>
-          <tr>
-            <td><span class="badge b-teal">KCT đi thẳng KTC đích</span></td>
-            <td>BC → KCT → KTC cuối (bỏ qua KTC đầu)</td>
-            <td>Tối ưu leadtime cho tuyến dài — cắt bớt 1 điểm dừng</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Hệ thống sort -->
-    <div style="font-size:12px;font-weight:700;color:var(--text-sec);margin-bottom:10px">Các phương thức xử lý hàng tại KTC</div>
-    <div class="grid-2" style="gap:12px;margin-bottom:12px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:6px">🤖 Auto Sorting (băng chuyền tự động)</div>
-        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Hàng lên băng tải → sorter quét mã → phân vào chute theo BC đích. Quy mô theo số chute: <strong>HN02: 288 đích · HCM01: ~600 đích · HCM20: 500 đích · Bưu Yên: 800 đích</strong>. Nhanh, chính xác, phù hợp hàng Normal/Bulky vừa.</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--warn-text);margin-bottom:6px">👷 Thủ công (bảng tải)</div>
-        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Phân loại bằng tay theo mã BC (A, B, C…) — mỗi bậc tối đa 12 nhóm (bậc 2 = 144 BC). Dùng khi hàng không đưa lên băng tải được, hoặc KTC nhỏ chưa có sorter.</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--blue-text);margin-bottom:6px">⚡ Wheel Sorter (bánh xe điều hướng)</div>
-        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Tốc độ cao hơn Auto Sorting — hệ thống bánh xe điều tiết dòng chảy kiện hàng. Kiện được đưa vào hành lang đích hoặc xuất thẳng lên xe.</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--teal-text);margin-bottom:6px">🏋️ Hàng nặng (Freight)</div>
-        <div style="font-size:11px;color:var(--text-sec);line-height:1.8">Xử lý thủ công riêng — chia bậc 1 cho 4–6 đích, pallet 500kg. Khu vực riêng trong kho, không dùng băng tải chung. DX là KTC chính xử lý Freight miền Bắc.</div>
-      </div>
-    </div>
-
-    <div class="callout warn">
-      <span class="callout-icon">⚠️</span>
-      <div><strong>Gotcha data quan trọng:</strong> <code class="inline">WHERE warehouse_type = 'KTC'</code> trong dim_warehouse trả về cả KTC lẫn KCT (111 kho). Phân biệt bằng tên: <code class="inline">LOWER(warehouse_name) LIKE 'kho trung chuyển%'</code> = KTC thực sự · <code class="inline">LIKE 'kho chuyển tiếp%'</code> = KCT.</div>
-    </div>
   </div>
 
   <div class="sub">
@@ -219,39 +156,35 @@
 
   <div class="sub">
     <div class="sub-title">Loại khách hàng</div>
-    <p style="font-size:12px;color:var(--text-mute);margin-bottom:12px">3 phân khúc chính — phân loại theo <code class="inline">client_type</code> trong <code class="inline">iceberg.dwh.dim_client</code>.</p>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:12px">3 phân khúc chính — phân biệt qua cột <code class="inline">client_type</code> trong bảng <code class="inline">iceberg.dwh.dim_client</code>, JOIN với shippingorder theo <code class="inline">client_id</code>.</p>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Phân khúc</th><th>Định nghĩa</th><th>Đặc điểm vận hành</th><th>Cách query</th></tr></thead>
+        <thead><tr><th>Phân khúc</th><th>Tỷ lệ sản lượng (ước tính)</th><th>Định nghĩa & Đặc điểm</th><th>Nhận biết</th></tr></thead>
         <tbody>
           <tr>
             <td><span class="badge b-blue">SME</span></td>
-            <td>Tất cả shop/merchant thông thường — cửa hàng nhỏ, doanh nghiệp vừa. Đây là phân khúc lớn nhất theo số đơn.</td>
-            <td>Volume lớn, không có SLA cam kết đặc biệt. Theo dõi GTC/LTC theo client_id là đủ.</td>
-            <td><code class="inline">ELSE 'SME'</code> (default khi không phải TTS/SHOPEE)</td>
+            <td><strong>~75–80%</strong> tổng đơn</td>
+            <td>Shop/merchant thông thường — cửa hàng nhỏ đến doanh nghiệp vừa. Phân khúc chủ lực về sản lượng. Không có SLA cam kết đặc biệt.</td>
+            <td><code class="inline">client_type</code> không chứa 'tts' hay 'shopee' → mặc định là SME</td>
           </tr>
           <tr>
             <td><span class="badge b-orange">SHOPEE</span></td>
-            <td>Đơn từ sàn Shopee — seller giao đơn qua Shopee API, GHN nhận từ platform. Bao gồm cả đơn drop-off (seller tự mang hàng đến kho Shopee, không cần shipper đến lấy).</td>
-            <td>Drop-off model: <code class="inline">pick_station_id = 1234</code> — cần loại khi tính GTC. API cancel phổ biến sau khi shipper đã lên đường.</td>
-            <td><code class="inline">WHEN lower(client_type) LIKE '%shopee%' THEN 'SHOPEE'</code></td>
+            <td><strong>~15–20%</strong> tổng đơn</td>
+            <td>Đơn từ sàn Shopee. Bao gồm drop-off (seller tự mang hàng đến hub Shopee, không cần lấy). API cancel phổ biến sau khi shipper đã nhận đơn.</td>
+            <td><code class="inline">LOWER(client_type) LIKE '%shopee%'</code></td>
           </tr>
           <tr>
             <td><span class="badge b-purple">TTS</span></td>
-            <td>TikTok Shop — sàn TMĐT TikTok. Khách hàng Key Account với SLA giao hàng riêng, được monitor chặt chẽ.</td>
-            <td>SLA 2 mức (thay đổi từ 2025-12-08). Có bảng riêng: <code class="inline">sorting_core.ontimetts</code>. Query on-time TTS luôn filter <code class="inline">client_type = 'TTS'</code>.</td>
-            <td><code class="inline">WHEN lower(client_type) LIKE '%tts%' THEN 'TTS'</code></td>
+            <td><strong>~5–8%</strong> tổng đơn</td>
+            <td>TikTok Shop — Key Account với SLA giao hàng riêng, được monitor chặt. Có bảng KPI riêng: <code class="inline">sorting_core.ontimetts</code>.</td>
+            <td><code class="inline">LOWER(client_type) LIKE '%tts%'</code></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="code-block" style="margin-top:12px">
-      <div class="code-hdr"><span>SQL — Phân loại khách hàng (chuẩn)</span><button class="copy-btn">Copy</button></div>
-      <pre><span class="kw">CASE</span>
-    <span class="kw">WHEN</span> <span class="fn">lower</span>(c.client_type) <span class="kw">LIKE</span> <span class="str">'%tts%'</span>    <span class="kw">THEN</span> <span class="str">'TTS'</span>
-    <span class="kw">WHEN</span> <span class="fn">lower</span>(c.client_type) <span class="kw">LIKE</span> <span class="str">'%shopee%'</span> <span class="kw">THEN</span> <span class="str">'SHOPEE'</span>
-    <span class="kw">ELSE</span> <span class="str">'SME'</span>
-<span class="kw">END</span> <span class="kw">AS</span> client_type</pre>
+    <div class="callout warn" style="margin-top:10px">
+      <span class="callout-icon">⚠️</span>
+      <div style="font-size:12px"><strong>Gotcha:</strong> <code class="inline">client_type</code> trong <code class="inline">dim_client</code> NULL ≈ 99% rows — KHÔNG filter <code>=&nbsp;'SME'</code> trực tiếp. Dùng CASE WHEN với LOWER LIKE để phân loại, ELSE mới là SME. Xem Tab Dataset hoặc Tab Query Standards để biết query chuẩn.</div>
     </div>
   </div>
 
@@ -415,27 +348,6 @@
     </div>
   </div>
 
-  <div class="sub">
-    <div class="sub-title">GHN vs Ninja Van — Điểm cần điều chỉnh tư duy</div>
-    <div class="compare">
-      <div class="compare-col nv">
-        <div class="compare-hdr">🔵 Ninja Van (bạn đã quen)</div>
-        <div class="compare-item">Last-mile delivery focus chính</div>
-        <div class="compare-item">Hub sorting với sortation code</div>
-        <div class="compare-item">On-time SLA đơn giản</div>
-        <div class="compare-item">BigQuery / data platform riêng</div>
-        <div class="compare-item">1-2 loại kho</div>
-      </div>
-      <div class="compare-col ghn">
-        <div class="compare-hdr">🟠 GHN (cần học lại)</div>
-        <div class="compare-item">Full-stack: lấy → sort → giao → trả</div>
-        <div class="compare-item"><strong>4 tầng:</strong> BC → KCT → KTC → KCT → BC</div>
-        <div class="compare-item">KPI có cutoff giờ cụ thể (15h / 19h)</div>
-        <div class="compare-item"><strong>Trino</strong> (không phải BigQuery, cú pháp khác)</div>
-        <div class="compare-item">3 loại kho với vai trò rất khác nhau</div>
-      </div>
-    </div>
-  </div>
 
 </div><!-- /tab-overview -->
 
@@ -463,14 +375,17 @@
         </div>
         <div class="tbl-wrap" style="margin:0">
           <table>
-            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Sort prefix</td><td><code>A</code> (bao gồm A, A1...)</td></tr>
-            <tr><td style="color:var(--text-mute);font-size:11px">Loại hàng</td><td>Hàng <strong>NHỎ</strong> chính — 652 tuyến</td></tr>
-            <tr><td style="color:var(--text-mute);font-size:11px">Vị trí</td><td>Hà Nội nội thành</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Sort prefix</td><td><code>A</code> và <code>C</code> (cả hai đều sort tại đây)</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Loại hàng</td><td>Hàng <strong>NHỎ</strong> chính — hàng Normal/Bulky</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Vị trí</td><td>KCN Đài Tư, Long Biên, Hà Nội</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Nhập TB/giờ</td><td><strong>~16.576</strong> kiện · Peak: giờ 22 (~51.387)</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Sort TB/giờ</td><td><strong>~8.500</strong> kiện (Unpack/Pack)</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Export TB/giờ</td><td><strong>~16.610</strong> kiện · Peak: giờ 3 (~48.856)</td></tr>
           </table>
         </div>
         <div class="callout warn" style="margin:0">
           <span class="callout-icon">⚠️</span>
-          <div style="font-size:11px"><strong>Prefix C tại HN02 = hàng FORWARD</strong> sang KTC HY01, không sort tại HN02. Đây là lỗi phổ biến nhất khi tính sản lượng sort.</div>
+          <div style="font-size:11px"><strong>Mã C split giữa HN02 và HY01</strong> từ T4/2026. HN02 sort mã C cho BC lấy vùng Hà Nội/Tây Bắc; HY01 sort mã C cho BC vùng Hưng Yên/Hải Dương/đồng bằng phía đông. Tính sản lượng sort mã C phải phân tách theo <code>pick_warehouse_id</code>.</div>
         </div>
       </div>
       <!-- Dương Xá -->
@@ -479,19 +394,20 @@
           <div class="hub-alias" style="color:var(--teal-text)">DX</div>
           <div>
             <div class="hub-name">KTC Dương Xá</div>
-            <div class="hub-id">warehouse_id: <code class="inline">21513000</code> · Region: SC North</div>
+            <div class="hub-id">warehouse_id: <code class="inline">21513000</code> · Sort prefix: <code>B</code></div>
           </div>
         </div>
         <div class="tbl-wrap" style="margin:0">
           <table>
-            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Loại hàng</td><td>Hàng <strong>CK</strong> (Cồng Kềnh) & hàng <strong>nặng</strong> — chuyên biệt</td></tr>
-            <tr><td style="color:var(--text-mute);font-size:11px">Sorting</td><td><strong>Không có CBS/băng chuyền</strong> — xếp/dỡ thủ công theo tuyến</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px;width:110px">Loại hàng</td><td>Hàng <strong>CK</strong> (Cồng Kềnh) &amp; hàng <strong>nặng/Freight</strong> — chuyên biệt</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Sorting</td><td>Không có CBS/băng chuyền — xếp/dỡ <strong>thủ công</strong> theo tuyến</td></tr>
             <tr><td style="color:var(--text-mute);font-size:11px">Vị trí</td><td>Dương Xá, Gia Lâm, Hà Nội</td></tr>
+            <tr><td style="color:var(--text-mute);font-size:11px">Sản lượng</td><td>~315K đơn / tháng (T5/2026)</td></tr>
           </table>
         </div>
         <div class="callout info" style="margin:0">
           <span class="callout-icon">💡</span>
-          <div style="font-size:11px"><strong>DX không phải KCT (kho chuyển tiếp)</strong> — là KTC chuyên biệt hàng CK/nặng. Không có băng chuyền sort. Hàng được xếp/dỡ và phân loại thủ công theo tuyến.</div>
+          <div style="font-size:11px"><strong>DX là KTC chuyên hàng CK/nặng</strong> — không phải KCT. Không có băng chuyền. Mọi hàng vào DX đều được tính là <em>hàng sort</em> (dù không qua CBS) vì DX thực hiện phân loại và đóng kiện thủ công theo tuyến.</div>
         </div>
       </div>
       <!-- HN03 -->
@@ -515,6 +431,34 @@
           <div style="font-size:11px">Xác nhận sort prefix và loại hàng của HN03 với team Ops trước khi dùng trong báo cáo.</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">HN02 — Năng suất xử lý theo khung giờ</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:12px">Dữ liệu trung bình theo giờ (số kiện). Giờ 22–23 là cao điểm nhập; giờ 3–4 là cao điểm xuất.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Khung giờ</th><th style="text-align:right">Nhập</th><th style="text-align:right">Unpack</th><th style="text-align:right">Pack</th><th style="text-align:right">Export</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(249,115,22,0.08)"><td><strong>21h</strong></td><td style="text-align:right">48.485</td><td style="text-align:right">19.325</td><td style="text-align:right">18.688</td><td style="text-align:right">29.491</td></tr>
+          <tr style="background:rgba(249,115,22,0.12)"><td><strong>22h</strong> ⬆️ peak nhập</td><td style="text-align:right">51.387</td><td style="text-align:right">21.393</td><td style="text-align:right">21.142</td><td style="text-align:right">28.435</td></tr>
+          <tr style="background:rgba(249,115,22,0.08)"><td><strong>23h</strong></td><td style="text-align:right">42.964</td><td style="text-align:right">21.808</td><td style="text-align:right">21.639</td><td style="text-align:right">39.244</td></tr>
+          <tr><td><strong>0h</strong></td><td style="text-align:right">22.143</td><td style="text-align:right">21.070</td><td style="text-align:right">20.406</td><td style="text-align:right">33.698</td></tr>
+          <tr><td><strong>1h</strong></td><td style="text-align:right">11.823</td><td style="text-align:right">12.420</td><td style="text-align:right">12.549</td><td style="text-align:right">22.723</td></tr>
+          <tr><td><strong>2h</strong></td><td style="text-align:right">9.127</td><td style="text-align:right">10.016</td><td style="text-align:right">10.286</td><td style="text-align:right">19.154</td></tr>
+          <tr style="background:rgba(93,234,212,0.08)"><td><strong>3h</strong> ⬆️ peak xuất</td><td style="text-align:right">5.582</td><td style="text-align:right">4.526</td><td style="text-align:right">4.661</td><td style="text-align:right">48.856</td></tr>
+          <tr><td><strong>4h</strong></td><td style="text-align:right">7.486</td><td style="text-align:right">5.975</td><td style="text-align:right">6.038</td><td style="text-align:right">20.786</td></tr>
+          <tr><td>5h–6h</td><td style="text-align:right">4.654 – 4.428</td><td style="text-align:right">4.386 – 3.115</td><td style="text-align:right">4.525 – 3.256</td><td style="text-align:right">11.818 – 16.433</td></tr>
+          <tr><td>7h–12h</td><td style="text-align:right;color:var(--text-mute)">3.341 – 11.834</td><td style="text-align:right;color:var(--text-mute)">1.112 – 7.402</td><td style="text-align:right;color:var(--text-mute)">1.179 – 7.482</td><td style="text-align:right;color:var(--text-mute)">1.877 – 23.391</td></tr>
+          <tr><td>13h–20h</td><td style="text-align:right;color:var(--text-mute)">9.605 – 25.759</td><td style="text-align:right;color:var(--text-mute)">459 – 8.793</td><td style="text-align:right;color:var(--text-mute)">458 – 8.733</td><td style="text-align:right;color:var(--text-mute)">3.825 – 15.178</td></tr>
+          <tr style="background:rgba(99,102,241,0.08);font-weight:700"><td>Trung bình / giờ</td><td style="text-align:right">16.576</td><td style="text-align:right">8.555</td><td style="text-align:right">8.504</td><td style="text-align:right">16.610</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info" style="margin-top:10px">
+      <span class="callout-icon">💡</span>
+      <div style="font-size:12px;line-height:1.7"><strong>Nhận xét:</strong> Ca đêm (21h–4h) là cao điểm xử lý chính — nhập đỉnh lúc 22h, sort peak 22h–0h, xuất đỉnh 3h. Ban ngày (7h–18h) nhập thấp hơn nhưng vẫn có xuất lẻ (đặc biệt 11h ~23K). Sort TB ~8.500/giờ so với nhập TB ~16.576/giờ phản ánh bottleneck khi hàng lên băng chuyền.</div>
     </div>
   </div>
 
@@ -567,12 +511,33 @@
     </div>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Giai đoạn</th><th>Công thức</th><th>Bảng nguồn</th><th>Cột partition</th></tr></thead>
+        <thead><tr><th>Giai đoạn</th><th>Logic</th><th>Công thức (phút)</th></tr></thead>
         <tbody>
-          <tr><td>Chờ rã kiện</td><td><code>DATE_DIFF('minute', receive_time, unpack_time)</code></td><td><code>sorting_core.cho_ra</code></td><td><code>ngay_ra</code></td></tr>
-          <tr><td>Chờ đóng kiện</td><td><code>DATE_DIFF('minute', unpack_time, pack_time)</code></td><td><code>sorting_core.cho_dong</code></td><td><code>ngay_pack</code></td></tr>
-          <tr><td>Chờ xuất kho</td><td><code>DATE_DIFF('minute', pack_time, export_time)</code></td><td><code>sorting_core.cho_xuat_new</code></td><td><code>ngay_xuat</code></td></tr>
-          <tr><td><strong>Tổng qua kho</strong></td><td><code>DATE_DIFF('minute', receive_time, export_time)</code></td><td><code>sorting_core.qua_kho</code></td><td>—</td></tr>
+          <tr>
+            <td><span class="badge b-teal">Chờ nhập</span></td>
+            <td>Từ lúc xe check-in tại cổng kho → kiện hàng đầu tiên được scan vào hệ thống. Phản ánh tốc độ tiếp nhận xe, mở cửa, bắt đầu dỡ hàng.</td>
+            <td><code>check_in → receive_time</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-orange">Chờ rã kiện</span></td>
+            <td>Từ lúc scan nhập → rã kiện ra. Phản ánh tốc độ dỡ hàng và đưa lên băng chuyền (hoặc bàn rã thủ công).</td>
+            <td><code>DATE_DIFF('minute', receive_time, unpack_time)</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-warn">Chờ sort / đóng</span></td>
+            <td>Từ lúc rã kiện → đóng kiện mới. Phản ánh tốc độ băng chuyền sort và bước đóng gói theo tuyến đích.</td>
+            <td><code>DATE_DIFF('minute', unpack_time, pack_time)</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge b-blue">Chờ xuất</span></td>
+            <td>Từ lúc đóng kiện xong → kiện được tải lên xe xuất. Phản ánh thời gian chờ xe / lịch lên hàng. Thường dài nếu xe chưa đến hoặc chưa đủ tải.</td>
+            <td><code>DATE_DIFF('minute', pack_time, export_time)</code></td>
+          </tr>
+          <tr style="background:rgba(134,239,172,0.06)">
+            <td><span class="badge b-green">Tổng qua kho</span></td>
+            <td>Toàn bộ thời gian từ nhập → xuất. KPI tổng hợp nhất cho hiệu suất kho. Bằng tổng 3 giai đoạn trên (không tính Chờ nhập).</td>
+            <td><code>DATE_DIFF('minute', receive_time, export_time)</code></td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -1080,6 +1045,61 @@
     </div>
   </div>
 
+  <!-- Data Freshness -->
+  <div class="sub">
+    <div class="sub-title">Thời gian cập nhật dữ liệu — Data Freshness</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:12px">Hiểu lag của từng bảng để không dùng sai nguồn khi cần số realtime vs số batch.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Bảng / Nhóm bảng</th><th>Tần suất cập nhật</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>
+              <code>"dw-ghn"</code> — <code>shippingorder_createddate</code><br>
+              <code>"dw-ghn"</code> — <code>shippingorder_endpicktime</code><br>
+              <code>"dw-ghn"</code> — <code>shippingorder_enddeliverytime</code><br>
+              <code>"dw-ghn"</code> — <code>inside_package</code>
+            </td>
+            <td><span class="badge b-green">~1 giờ / lần</span></td>
+            <td>Nguồn operational raw — lag thấp, phù hợp theo dõi gần realtime</td>
+          </tr>
+          <tr>
+            <td>
+              <code>iceberg.clean</code> — <code>online_core_corev2_shippingorder_*</code><br>
+              (createddate / endpicktime / enddeliverytime)
+            </td>
+            <td><span class="badge b-warn">~4 giờ / lần</span></td>
+            <td>Đã qua pipeline clean — chuẩn hóa, dùng cho báo cáo chính thức. Không dùng khi cần số trong ngày gấp</td>
+          </tr>
+          <tr>
+            <td><code>iceberg.clean</code> — <code>inside_package_history</code></td>
+            <td><span class="badge b-warn">~2 giờ / lần</span></td>
+            <td>Nhanh hơn shippingorder clean — dùng khi cần action lịch sử qua kho gần đây</td>
+          </tr>
+          <tr>
+            <td><code>iceberg.clean</code> — <code>shipping_order_processing_realtime</code></td>
+            <td><span class="badge b-green">~15 phút / lần</span></td>
+            <td>Gần realtime nhất trong iceberg.clean — dùng để monitor đơn đang xử lý, tìm đơn stuck</td>
+          </tr>
+          <tr>
+            <td><code>iceberg.raw</code> — <code>lastmile_lastmile_trip_v2_production_tripitem</code></td>
+            <td><span class="badge b-green">~1 giờ / lần</span></td>
+            <td>Trip item last-mile — theo dõi shipper, chuyến giao gần đây</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn" style="margin-top:10px">
+      <span class="callout-icon">⚠️</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>Nguyên tắc chọn nguồn:</strong><br>
+        • Báo cáo cuối ngày / tuần / tháng → dùng <code>iceberg.clean.*</code> (chuẩn hóa, chính thức)<br>
+        • Theo dõi trong ngày, cần số gần nhất → dùng <code>"dw-ghn".*</code> (lag ~1h) hoặc <code>realtime</code> (lag ~15p)<br>
+        • Không mix 2 nguồn khi so sánh cùng 1 chỉ tiêu — số sẽ lệch do lag và logic clean khác nhau
+      </div>
+    </div>
+  </div>
+
   <!-- Group nav -->
   <div class="ds-group-nav">
     <button class="ds-group-btn active" data-group="ds-inside">📦 Đơn hàng</button>
@@ -1087,6 +1107,7 @@
     <button class="ds-group-btn" data-group="ds-transport">🚚 Vận tải</button>
     <button class="ds-group-btn" data-group="ds-lastmile">🛵 Last Mile</button>
     <button class="ds-group-btn" data-group="ds-dim">📚 Dimension</button>
+    <button class="ds-group-btn" data-group="ds-querylib">📋 Query Library</button>
   </div>
 
   <!-- Group 1: Đơn hàng -->
@@ -1389,6 +1410,170 @@
     </div>
   </div>
 
+  <!-- Group 6: Query Library -->
+  <div class="ds-group" id="ds-querylib">
+    <div class="ds-group-title">📋 Query Library — Template theo Usecase</div>
+    <div class="callout tip" style="margin-bottom:16px">
+      <span class="callout-icon">💡</span>
+      <div style="font-size:12px;line-height:1.7">Template chuẩn — đọc để hiểu cấu trúc đúng, không copy-paste nguyên. Mỗi query cần điều chỉnh date range, warehouse_id, và filter theo yêu cầu cụ thể. File đầy đủ ở <code>Domain_GHN/patterns/</code>.</div>
+    </div>
+
+    <div class="ds-cards">
+
+      <!-- 1. Throughput KTC theo ngày -->
+      <div class="ds-card">
+        <div class="ds-card-name">Throughput KTC theo ngày (ktc_north)</div>
+        <div class="ds-card-desc">Đếm số đơn nhập/xuất/sort tại KTC cụm HN theo ngày ca. Bảng: <code>iceberg.sorting_core.ktc_north</code>.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — Throughput KTC theo ngày</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    ngay_theo_ca,
+    warehouse_id,
+    action,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> so_luong,
+    <span class="fn">SUM</span>(weight) / <span class="num">1000.0</span> <span class="kw">AS</span> tong_kg
+<span class="kw">FROM</span> iceberg.sorting_core.ktc_north
+<span class="kw">WHERE</span> warehouse_id <span class="kw">IN</span> (<span class="num">1121</span>, <span class="num">21513000</span>, <span class="num">22487000</span>)
+  <span class="kw">AND</span> ngay_theo_ca >= <span class="fn">date_format</span>(<span class="fn">date_add</span>(<span class="str">'day'</span>,-7,<span class="fn">current_date</span>),<span class="str">'%Y-%m-%d'</span>)
+<span class="kw">GROUP BY</span> <span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>
+<span class="kw">ORDER BY</span> <span class="num">1</span> <span class="kw">DESC</span></pre>
+        </div>
+        <div class="ds-gotcha"><span>🚨</span><span><code>ngay_theo_ca</code> là VARCHAR — không dùng date_format, dùng SUBSTR để lấy tháng. <code>action</code> gồm: receive, unpack, pack, export.</span></div>
+      </div>
+
+      <!-- 2. Leadtime qua kho -->
+      <div class="ds-card">
+        <div class="ds-card-name">Leadtime trung bình qua kho (qua_kho)</div>
+        <div class="ds-card-desc">Thời gian trung bình từng bước: rã kiện, đóng kiện, xuất kho. Bảng: <code>iceberg.sorting_core.qua_kho</code>.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — Leadtime TB theo kho và ngày</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    <span class="fn">DATE</span>(receive_time) <span class="kw">AS</span> ngay_nhan,
+    warehouse_id,
+    <span class="fn">ROUND</span>(<span class="fn">AVG</span>(leadtime_receive_unpack_min),<span class="num">1</span>) <span class="kw">AS</span> avg_cho_ra_min,
+    <span class="fn">ROUND</span>(<span class="fn">AVG</span>(leadtime_unpack_pack_min),<span class="num">1</span>)    <span class="kw">AS</span> avg_cho_dong_min,
+    <span class="fn">ROUND</span>(<span class="fn">AVG</span>(leadtime_pack_export_min),<span class="num">1</span>)   <span class="kw">AS</span> avg_cho_xuat_min,
+    <span class="fn">ROUND</span>(<span class="fn">AVG</span>(leadtime_receive_export_min),<span class="num">1</span>) <span class="kw">AS</span> avg_tong_min,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> so_don
+<span class="kw">FROM</span> iceberg.sorting_core.qua_kho
+<span class="kw">WHERE</span> warehouse_id <span class="kw">IN</span> (<span class="num">1121</span>, <span class="num">21513000</span>, <span class="num">22487000</span>)
+  <span class="kw">AND</span> <span class="fn">DATE</span>(receive_time) >= <span class="fn">date_add</span>(<span class="str">'day'</span>,-7,<span class="fn">current_date</span>)
+<span class="kw">GROUP BY</span> <span class="num">1</span>,<span class="num">2</span>
+<span class="kw">ORDER BY</span> <span class="num">1</span> <span class="kw">DESC</span></pre>
+        </div>
+      </div>
+
+      <!-- 3. GTC/LTC nhanh -->
+      <div class="ds-card">
+        <div class="ds-card-name">GTC / LTC nhanh (dsh_gtc_ltc_ttc)</div>
+        <div class="ds-card-desc">Số GTC/LTC/TTC đã tính sẵn theo bưu cục và ngày. Bảng: <code>iceberg.sorting_core.dsh_gtc_ltc_ttc</code>. Không cần tự tính từ raw.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — GTC theo BC HN trong 7 ngày</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    g.loaddate,
+    g.warehouse_id,
+    w.warehouse_name,
+    <span class="fn">SUM</span>(g.so_don_can_giao)  <span class="kw">AS</span> can_giao,
+    <span class="fn">SUM</span>(g.so_don_giao_dung) <span class="kw">AS</span> giao_dung,
+    <span class="fn">ROUND</span>(<span class="fn">SUM</span>(g.so_don_giao_dung)*<span class="num">100.0</span>/<span class="fn">NULLIF</span>(<span class="fn">SUM</span>(g.so_don_can_giao),<span class="num">0</span>),<span class="num">2</span>) <span class="kw">AS</span> gtc_pct
+<span class="kw">FROM</span> iceberg.sorting_core.dsh_gtc_ltc_ttc g
+<span class="kw">LEFT JOIN</span> iceberg.dwh.dim_warehouse w <span class="kw">ON</span> g.warehouse_id = w.warehouse_id
+<span class="kw">WHERE</span> w.province_name = <span class="str">'Hà Nội'</span>
+  <span class="kw">AND</span> w.warehouse_type = <span class="str">'BC'</span>
+  <span class="kw">AND</span> g.loaddate >= <span class="fn">date_add</span>(<span class="str">'day'</span>,-7,<span class="fn">current_date</span>)
+<span class="kw">GROUP BY</span> <span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>
+<span class="kw">ORDER BY</span> <span class="num">1</span> <span class="kw">DESC</span>, gtc_pct <span class="kw">ASC</span></pre>
+        </div>
+        <div class="ds-note"><span>⚠️</span><span>Partition key: <code>loaddate</code>. Tên cột GTC/LTC/TTC có thể khác tùy phiên bản bảng — <code>SELECT * LIMIT 1</code> để xem schema thực tế.</span></div>
+      </div>
+
+      <!-- 4. Phân loại hàng sort vs forward -->
+      <div class="ds-card">
+        <div class="ds-card-name">Phân loại Sort vs Forward (detect từ action)</div>
+        <div class="ds-card-desc">Xác định đơn nào được sort tại kho X vs chỉ transit (forward) qua. Nguồn: bảng action history.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — Sort vs Forward logic</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="cmt">-- Hàng sort = có action PACK tại kho X trong cùng ngày</span>
+<span class="kw">SELECT</span>
+    order_code,
+    warehouse_id,
+    ngay_theo_ca,
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> action_category = <span class="str">'pack'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) = <span class="num">1</span>
+        <span class="kw">THEN</span> <span class="str">'Hàng sort'</span>
+        <span class="kw">ELSE</span> <span class="str">'Hàng forward'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> dieu_kien_nhom
+<span class="kw">FROM</span> iceberg.sorting_core.ktc_north
+<span class="kw">WHERE</span> warehouse_id = <span class="num">1121</span>
+  <span class="kw">AND</span> ngay_theo_ca = <span class="str">'2026-05-20'</span>
+<span class="kw">GROUP BY</span> <span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span></pre>
+        </div>
+        <div class="ds-note"><span>⚠️</span><span>KTC DX (21513000): tất cả hàng qua DX đều tính là <em>hàng sort</em> — không cần check action_category.</span></div>
+      </div>
+
+      <!-- 5. Phân loại loại hàng -->
+      <div class="ds-card">
+        <div class="ds-card-name">Phân loại loại hàng (Normal / Bulky / Freight)</div>
+        <div class="ds-card-desc">Phân loại 3 nhóm hàng từ bảng shippingorder. Dùng trong hầu hết query phân tích KTC.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — Phân loại hàng chuẩn</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="kw">CASE</span>
+    <span class="kw">WHEN</span> type_order <span class="kw">LIKE</span> <span class="str">'%freight%'</span>  <span class="kw">THEN</span> <span class="str">'Freight'</span>
+    <span class="kw">WHEN</span> <span class="fn">CONTAINS</span>(tag, <span class="str">'bulky'</span>)       <span class="kw">THEN</span> <span class="str">'Bulky'</span>   <span class="cmt">-- nếu tag là ARRAY(VARCHAR)</span>
+    <span class="kw">WHEN</span> tag <span class="kw">LIKE</span> <span class="str">'%bulky%'</span>           <span class="kw">THEN</span> <span class="str">'Bulky'</span>   <span class="cmt">-- nếu tag là VARCHAR</span>
+    <span class="kw">ELSE</span>                                <span class="str">'Normal'</span>
+<span class="kw">END AS</span> loai_hang</pre>
+        </div>
+        <div class="ds-note"><span>⚠️</span><span>Kiểm tra <code>typeof(tag)</code> trước — nếu là ARRAY dùng CONTAINS, nếu là VARCHAR dùng LIKE.</span></div>
+      </div>
+
+      <!-- 6. Backlog tồn kho -->
+      <div class="ds-card">
+        <div class="ds-card-name">Backlog tồn kho hiện tại (dsh_bck)</div>
+        <div class="ds-card-desc">Xem tồn kho theo aging bucket tại BC HN. Bảng: <code>iceberg.sorting_core.dsh_bck</code>.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — Backlog BC Hà Nội ngày gần nhất</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    b.report_date,
+    b.warehouse_id,
+    w.warehouse_name,
+    b.backlog_type,
+    b.aging_bucket,
+    <span class="fn">SUM</span>(b.so_don) <span class="kw">AS</span> so_don
+<span class="kw">FROM</span> iceberg.sorting_core.dsh_bck b
+<span class="kw">LEFT JOIN</span> iceberg.dwh.dim_warehouse w <span class="kw">ON</span> b.warehouse_id = w.warehouse_id
+<span class="kw">WHERE</span> w.province_name = <span class="str">'Hà Nội'</span>
+  <span class="kw">AND</span> w.warehouse_type = <span class="str">'BC'</span>
+  <span class="kw">AND</span> b.report_date = <span class="fn">date_add</span>(<span class="str">'day'</span>,-1,<span class="fn">current_date</span>)
+<span class="kw">GROUP BY</span> <span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>
+<span class="kw">ORDER BY</span> b.aging_bucket</pre>
+        </div>
+      </div>
+
+      <!-- 7. Phân loại khách hàng -->
+      <div class="ds-card">
+        <div class="ds-card-name">Phân loại khách hàng SME / SHOPEE / TTS</div>
+        <div class="ds-card-desc">Phân khúc khách hàng từ dim_client. JOIN với shippingorder qua <code>client_id</code>.</div>
+        <div class="code-block" style="margin-top:10px">
+          <div class="code-hdr"><span>SQL — Phân loại khách hàng chuẩn</span><button class="copy-btn">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    s.order_code,
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> <span class="fn">LOWER</span>(c.client_type) <span class="kw">LIKE</span> <span class="str">'%tts%'</span>    <span class="kw">THEN</span> <span class="str">'TTS'</span>
+        <span class="kw">WHEN</span> <span class="fn">LOWER</span>(c.client_type) <span class="kw">LIKE</span> <span class="str">'%shopee%'</span> <span class="kw">THEN</span> <span class="str">'SHOPEE'</span>
+        <span class="kw">ELSE</span> <span class="str">'SME'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> client_segment
+<span class="kw">FROM</span> iceberg.clean.online_core_corev2_shippingorder_createddate s
+<span class="kw">LEFT JOIN</span> iceberg.dwh.dim_client c <span class="kw">ON</span> s.client_id = c.client_id
+<span class="kw">WHERE</span> s.dt >= <span class="fn">date_format</span>(<span class="fn">date_add</span>(<span class="str">'day'</span>,-7,<span class="fn">current_date</span>),<span class="str">'%Y-%m-%d'</span>)
+  <span class="kw">AND</span> s.pick_warehouse_id = <span class="num">1121</span>  <span class="cmt">-- BC lấy hàng thuộc HN02</span></pre>
+        </div>
+        <div class="ds-gotcha"><span>🚨</span><span><code>client_type NULL ≈ 99%</code> trong dim_client — không filter = 'SME'. Luôn dùng CASE với LOWER LIKE, ELSE mới là SME.</span></div>
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- /tab-dataset -->
 
 <!-- ═══════════════════════════════════════════════════════
@@ -1532,6 +1717,110 @@
       <li>Không rõ business meaning cột → hỏi Ops, không tự suy luận</li>
     </ul>
   </div>
+
+  <div class="sub">
+    <div class="sub-title">Aggregate Functions đặc biệt của Trino</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Hàm</th><th>✅ Trino</th><th>❌ Không dùng</th><th>Lý do</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Count có điều kiện</strong></td>
+            <td><code>COUNT(CASE WHEN cond THEN 1 END)</code><br><code>SUM(CASE WHEN cond THEN 1 ELSE 0 END)</code></td>
+            <td><code>COUNTIF(cond)</code></td>
+            <td>COUNTIF là BigQuery — Trino không có</td>
+          </tr>
+          <tr>
+            <td><strong>Giá trị tùy ý</strong></td>
+            <td>Thiết kế lại query hoặc dùng <code>MIN()</code>/<code>MAX()</code></td>
+            <td><code>ARBITRARY(col)</code></td>
+            <td>Kết quả không ổn định — không dùng trong production query</td>
+          </tr>
+          <tr>
+            <td><strong>Median / Percentile</strong></td>
+            <td><code>APPROX_PERCENTILE(col, 0.5)</code></td>
+            <td><code>MEDIAN(col)</code></td>
+            <td>Trino dùng APPROX_PERCENTILE</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">ngay_theo_ca — Ca làm việc vs Ngày thực</div>
+    <div class="callout error">
+      <span class="callout-icon">🚨</span>
+      <div>Hàng xử lý <strong>0:00–6:00 sáng</strong> thuộc về <strong>ca đêm hôm trước</strong>. Dùng <code>DATE(action_time)</code> thẳng sẽ gán sai ngày cho ca đêm. Luôn dùng <code>ngay_theo_ca</code> từ bảng đã tính sẵn.</div>
+    </div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Tính ngay_theo_ca từ action_time</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="kw">CASE</span>
+    <span class="cmt">-- DX (21513000): ca đêm kết thúc trước 7h</span>
+    <span class="kw">WHEN</span> warehouse_id = <span class="str">'21513000'</span> <span class="kw">AND</span> <span class="fn">HOUR</span>(action_time) <span class="kw">BETWEEN</span> <span class="num">0</span> <span class="kw">AND</span> <span class="num">7</span>
+        <span class="kw">THEN</span> <span class="fn">DATE</span>(action_time) - <span class="kw">INTERVAL</span> <span class="str">'1'</span> <span class="kw">DAY</span>
+    <span class="cmt">-- Các kho còn lại: ca đêm 0:00–6:00</span>
+    <span class="kw">WHEN</span> <span class="fn">HOUR</span>(action_time) <span class="kw">BETWEEN</span> <span class="num">0</span> <span class="kw">AND</span> <span class="num">6</span>
+        <span class="kw">THEN</span> <span class="fn">DATE</span>(action_time) - <span class="kw">INTERVAL</span> <span class="str">'1'</span> <span class="kw">DAY</span>
+    <span class="kw">ELSE</span> <span class="fn">DATE</span>(action_time)
+<span class="kw">END AS</span> ngay_theo_ca
+
+<span class="cmt">-- ⚠️ ngay_theo_ca trong truck_north là VARCHAR 'YYYY-MM-DD'</span>
+<span class="cmt">-- Lấy tháng: SUBSTR(ngay_theo_ca, 1, 7) — KHÔNG dùng date_format()</span></pre>
+    </div>
+    <div class="callout warn" style="margin-top:8px">
+      <span class="callout-icon">⚠️</span>
+      <div style="font-size:12px"><strong>Ca làm việc HAN không nhất quán:</strong> Giờ ca KTC HAN (1121) có thể khác nhau giữa các query cũ và hiện tại. Khi gặp câu hỏi về ca HN02, <strong>hỏi lại Ops</strong> trước khi áp khung giờ.</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Sort prefix → KTC mapping (verified T5/2026)</div>
+    <p style="font-size:12px;color:var(--text-mute);margin-bottom:10px">Mỗi mã prefix trên package = terminal sort hub phụ trách. Dùng để xác định KTC sort đơn.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Prefix</th><th>Warehouse ID</th><th>KTC</th><th>Vùng phục vụ chính</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(249,115,22,0.08)"><td><code>A</code></td><td>1121</td><td>KTC HN02</td><td>Hà Nội nội thành + nội vùng HN</td></tr>
+          <tr style="background:rgba(249,115,22,0.05)"><td><code>C</code></td><td>1121 / 21365000</td><td>HN02 (Tây Bắc) / HY01 (ĐBSH phía đông)</td><td>Split từ T4/2026 — phân tách bằng pick_warehouse_id</td></tr>
+          <tr><td><code>B</code></td><td>21513000</td><td>KTC Dương Xá</td><td>Hàng CK/Freight (verify thêm)</td></tr>
+          <tr><td><code>HY</code></td><td>21365000</td><td>KTC HY01</td><td>Hưng Yên, Hải Dương, Nam Định, Thái Bình, Ninh Bình</td></tr>
+          <tr><td><code>D / E / R</code></td><td>1626</td><td>KTC HCM01</td><td>Miền Nam</td></tr>
+          <tr><td><code>G / W</code></td><td>2388</td><td>KTC HCM20</td><td>Nội thành HCM + Miền Nam</td></tr>
+          <tr><td><code>N / S</code></td><td>1141 / 20729000</td><td>KTC Đà Nẵng</td><td>Miền Trung</td></tr>
+          <tr><td><code>V</code></td><td>1910</td><td>KTC Nghệ An</td><td>Bắc Trung Bộ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ds-gotcha" style="margin-top:8px"><span>🚨</span><span>Không dùng <code>sort_code</code> trong shippingorder để xác định mã sort — chỉ lưu giá trị hiện tại, không đủ lịch sử. Nguồn đúng: <code>iceberg.raw.pickup_delivery__dtr_insidev3__package</code> cột <code>route_code</code>.</span></div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">PACK / UNPACK — Vòng đời package và cách đếm sản lượng sort</div>
+    <div class="callout info">
+      <span class="callout-icon">📦</span>
+      <div style="font-size:12px;line-height:1.7">
+        <strong>PACK</strong> = package được sinh ra. <strong>UNPACK</strong> = package bị hủy. Tại mỗi kho: UNPACK trước → rã kiện cũ → sort → PACK sau → đóng kiện mới.<br>
+        <strong>Sản lượng sort tại kho X</strong> = PACK count hoặc UNPACK count tại kho X (hai chỉ số bằng nhau trong trạng thái ổn định).<br>
+        <strong>Cảnh báo:</strong> SUM PACK/UNPACK toàn mạng lưới = overcounting — 1 đơn đi qua 3 kho sẽ được đếm 3 lần.
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-hdr"><span>SQL — Sản lượng sort theo ngày (đúng cách)</span><button class="copy-btn">Copy</button></div>
+      <pre><span class="cmt">-- Đếm đơn có PACK tại kho cụ thể → sản lượng sort của kho đó</span>
+<span class="kw">SELECT</span>
+    ngay_theo_ca,
+    warehouse_id,
+    <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> order_code) <span class="kw">AS</span> sl_sort
+<span class="kw">FROM</span> iceberg.sorting_core.ktc_north
+<span class="kw">WHERE</span> action_category = <span class="str">'pack'</span>
+  <span class="kw">AND</span> warehouse_id <span class="kw">IN</span> (<span class="num">1121</span>, <span class="num">21513000</span>, <span class="num">22487000</span>)
+  <span class="kw">AND</span> ngay_theo_ca >= <span class="fn">date_format</span>(<span class="fn">date_add</span>(<span class="str">'day'</span>,-7,<span class="fn">current_date</span>),<span class="str">'%Y-%m-%d'</span>)
+<span class="kw">GROUP BY</span> <span class="num">1</span>,<span class="num">2</span>
+<span class="kw">ORDER BY</span> <span class="num">1</span> <span class="kw">DESC</span></pre>
+    </div>
+  </div>
+
 
 </div><!-- /tab-query -->
 

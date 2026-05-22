@@ -1,11 +1,11 @@
 # Processing — Onboarding DA Hà Nội
 
-**Cập nhật:** 2026-05-20 (session 3)
+**Cập nhật:** 2026-05-22 (session 4)
 **Task:** Tạo tài liệu bàn giao/onboarding cho DA mới — cụm kho Hà Nội
 
 ---
 
-## Đã xong (session 2 — 2026-05-20)
+## Đã xong (session 4 — 2026-05-22)
 
 - [x] Build HTML onboarding doc full-width 8 tab
 - [x] Tab 1 Tổng quan: GHN overview → cụm HN, loại hàng, loại khách hàng, so sánh NinjaVan
@@ -16,6 +16,14 @@
 - [x] Tab 6 Công cụ & Links: điền link thực tế cho tất cả tools
 - [x] Tab 7 Đầu mối: 6 nhóm placeholder TBD
 - [x] Tab 8 Checklist: 31 items actionable, link trực tiếp đến tools
+- [x] Tab 1: Sửa quy trình KTC (Nhận từ xe → Rã kiện → Phân loại → Đóng → Xuất), sửa KCT (nhập/xuất nguyên kiện), BC (NVPTTT = 1 người cả lấy lẫn giao)
+- [x] Tab 1: Xóa bảng "Các mô hình vận hành song song", xóa "Các phương thức xử lý tại KTC", xóa "GHN vs NinjaVan"
+- [x] Tab 1: Loại khách hàng — cập nhật tỷ lệ %, bỏ SQL query, chỉ ghi cột/bảng nhận biết
+- [x] Tab 2: HN02 sort prefix A và C, vị trí KCN Đài Tư, bảng năng suất theo giờ, callout mã C split từ T4/2026
+- [x] Tab 2: DX thêm sort prefix B, sản lượng ~315K, làm rõ không phải KCT
+- [x] Tab 4: Thêm nhóm "Query Library" với 7 template: throughput, leadtime, GTC, sort vs forward, loại hàng, backlog, phân loại KH
+- [x] Tab 5: Thêm aggregate functions đặc biệt (COUNTIF, ARBITRARY, APPROX_PERCENTILE), ngay_theo_ca, sort prefix mapping, PACK/UNPACK logic, workflow tìm schema
+- [x] Tab 4: Thêm section "Data Freshness" — thời gian cập nhật theo từng nhóm bảng (dw-ghn 1h, iceberg.clean shippingorder 4h, IPH 2h, realtime 15p, tripitem 1h)
 
 ### Link thực tế đã điền (Tab 6)
 - Metabase: https://data-bi.ghn.vn/
@@ -60,10 +68,7 @@
 
 ## Bước tiếp theo
 
-1. Điền đầu mối (tab 7): tên + team + contact 6 nhóm
-2. Lấy link 4 dashboard Metabase cụm HN điền vào tab 6 (phần dưới)
-3. Điền link Data Job Guideline khi có
-4. Xác nhận HN03 sort prefix với Ops
+1. Xác nhận HN03 sort prefix với Ops (vẫn còn TBD)
 
 ---
 
